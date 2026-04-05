@@ -3,3 +3,5 @@ razorpay
 requests
 Pillow
 python-dotenv
+gunicorn
+whitenoise
