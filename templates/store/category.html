@@ -1,0 +1,97 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ category.name }} Books — Bookverse{% endblock %}
+
+{% block content %}
+<div class="category-hero">
+  <div class="category-hero-bg">
+    {% if category.hero_image %}
+    <img src="{{ category.hero_image.url }}" alt="{{ category.name }}" class="category-hero-img" />
+    {% else %}
+    <img src="{% static 'images/hero.png' %}" alt="{{ category.name }}" class="category-hero-img" />
+    {% endif %}
+    <div class="category-hero-overlay"></div>
+  </div>
+  <div class="category-hero-content">
+    <span class="category-tag">{{ category.icon }} BOOKVERSE · CATEGORIES</span>
+    <h1 class="category-title">{{ category.name|upper }}</h1>
+  </div>
+</div>
+
+<div class="books-section">
+  <div class="sort-bar">
+    <label>SORT BY</label>
+    <form method="GET" id="sortForm">
+      <select name="sort" class="sort-select" onchange="document.getElementById('sortForm').submit()">
+        <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest</option>
+        <option value="price_asc" {% if current_sort == 'price_asc' %}selected{% endif %}>Price: Low to High</option>
+        <option value="price_desc" {% if current_sort == 'price_desc' %}selected{% endif %}>Price: High to Low</option>
+        <option value="rating" {% if current_sort == 'rating' %}selected{% endif %}>Top Rated</option>
+        <option value="title" {% if current_sort == 'title' %}selected{% endif %}>Title A–Z</option>
+      </select>
+    </form>
+    <span style="font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted); margin-left:16px;">
+      {{ books.paginator.count }} BOOKS
+    </span>
+  </div>
+
+  <div class="books-grid">
+    {% for book in books %}
+    <div class="book-card reveal" style="transition-delay: {{ forloop.counter0 }}50ms">
+      <a href="{% url 'book_detail' book.slug %}">
+        <div class="book-cover-wrap">
+          <img src="{{ book.get_cover }}" alt="{{ book.title }}" class="book-cover" loading="lazy"
+               onerror="this.src='{% static 'images/default_cover.png' %}'" />
+          {% if book.is_bestseller %}
+          <span class="book-badge badge-bestseller">BESTSELLER</span>
+          {% elif book.is_featured %}
+          <span class="book-badge badge-featured">FEATURED</span>
+          {% endif %}
+        </div>
+      </a>
+      <div class="book-info">
+        <span class="book-category">{{ book.category.name }}</span>
+        <a href="{% url 'book_detail' book.slug %}"><h3 class="book-title">{{ book.title }}</h3></a>
+        <p class="book-author">{{ book.authors }}</p>
+        <div class="book-rating">★ {{ book.rating }}</div>
+        <div class="book-price-row">
+          <span class="book-price">₹{{ book.price }}</span>
+          {% if book.original_price %}
+          <span class="book-original-price">₹{{ book.original_price }}</span>
+          <span class="book-discount">{{ book.discount_percent }}% OFF</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="book-card-footer">
+        <button class="btn-cart" onclick="addToCart({{ book.pk }}, this)">ADD TO CART</button>
+        <a href="{% url 'book_detail' book.slug %}" class="btn-detail">VIEW</a>
+      </div>
+    </div>
+    {% empty %}
+    <div style="grid-column:1/-1; text-align:center; padding:80px 0; color:var(--text-muted);">
+      <p>No books in this category yet.</p>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if books.has_other_pages %}
+  <div class="pagination">
+    {% if books.has_previous %}
+    <a href="?page={{ books.previous_page_number }}&sort={{ current_sort }}" class="page-item">← PREV</a>
+    {% endif %}
+    {% for num in books.paginator.page_range %}
+    {% if books.number == num %}
+    <span class="page-item active">{{ num }}</span>
+    {% elif num > books.number|add:'-3' and num < books.number|add:'3' %}
+    <a href="?page={{ num }}&sort={{ current_sort }}" class="page-item">{{ num }}</a>
+    {% endif %}
+    {% endfor %}
+    {% if books.has_next %}
+    <a href="?page={{ books.next_page_number }}&sort={{ current_sort }}" class="page-item">NEXT →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

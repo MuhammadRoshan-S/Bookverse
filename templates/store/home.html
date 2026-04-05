@@ -1,0 +1,246 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Bookverse — Your Universe of Books{% endblock %}
+
+{% block content %}
+
+<!-- ── Hero ── -->
+<section class="hero" id="home">
+  <div class="hero-bg">
+    <img src="{% static 'images/hero.png' %}" alt="Bookverse" class="hero-img" />
+    <div class="hero-overlay"></div>
+  </div>
+  <div class="hero-content">
+    <div class="hero-left">
+      <span class="hero-eyebrow">BOOK STORE · EST. 2025</span>
+      <h1 class="hero-title">BOOK<br/>VERSE</h1>
+      <p class="hero-sub">Where stories begin · minds expand</p>
+      <!-- CTA shown only on mobile (hero-right is hidden) -->
+      <a href="#trending" class="hero-cta" style="margin-top:20px">EXPLORE BOOKS →</a>
+    </div>
+    <div class="hero-right">
+      <p class="hero-desc">At Bookverse, we curate the finest collection of books across every genre — from riveting fiction to mind-bending science. Your next great read is waiting.</p>
+      <a href="#trending" class="hero-cta">EXPLORE BOOKS →</a>
+    </div>
+  </div>
+  <div class="hero-ticker">
+    <div class="ticker-track">
+      {% for cat in categories %}<span>{{ cat.name|upper }}</span><span>·</span>{% endfor %}
+      {% for cat in categories %}<span>{{ cat.name|upper }}</span><span>·</span>{% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ── 3D Book Carousel (Trending Now) ── -->
+<section class="trending-section" id="trending">
+  <div class="trending-header reveal">
+    <span class="section-tag">HOT RIGHT NOW</span>
+    <h2 class="section-title">TRENDING NOW</h2>
+  </div>
+
+  <div class="carousel-scene" id="carouselScene">
+    <div class="carousel-track" id="carouselTrack">
+      {% for book in carousel_books %}
+      <div class="carousel-item" data-index="{{ forloop.counter0 }}" data-slug="{{ book.slug }}">
+        <!-- Clicking the cover goes to book detail -->
+        <a href="{% url 'book_detail' book.slug %}" class="carousel-card">
+          <img src="{{ book.get_cover }}" alt="{{ book.title }}" class="carousel-cover"
+               loading="lazy" />
+          {% if book.is_bestseller %}<span class="carousel-badge">BEST SELLER</span>{% endif %}
+        </a>
+        <div class="carousel-info">
+          <p class="carousel-title">{{ book.title|truncatechars:32 }}</p>
+          <p class="carousel-author">{{ book.authors|truncatechars:28 }}</p>
+          <p class="carousel-price">₹{{ book.price }}</p>
+          <div class="carousel-actions">
+            <button class="carousel-cart-btn" onclick="addToCart({{ book.pk }}, this)">+ CART</button>
+            <form method="POST" action="{% url 'buy_now' book.pk %}" style="display:inline">
+              {% csrf_token %}
+              <button type="submit" class="carousel-buy-btn">BUY NOW</button>
+            </form>
+          </div>
+          <a href="{% url 'book_detail' book.slug %}" class="carousel-detail-link">VIEW DETAILS →</a>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    <button class="carousel-nav carousel-prev" id="carouselPrev" aria-label="Previous">&#8249;</button>
+    <button class="carousel-nav carousel-next" id="carouselNext" aria-label="Next">&#8250;</button>
+  </div>
+</section>
+
+<!-- ── Categories Horizontal Slider ── -->
+<section class="categories" id="categories">
+  <div class="section-header reveal">
+    <div class="section-header-left">
+      <span class="section-tag">EXPLORE · DISCOVER</span>
+      <h2 class="section-title">CATEGORIES</h2>
+    </div>
+    <div class="cat-nav-btns">
+      <button class="cat-nav-btn" id="catPrev" aria-label="Previous">&#8249;</button>
+      <button class="cat-nav-btn" id="catNext" aria-label="Next">&#8250;</button>
+    </div>
+  </div>
+
+  <div class="cat-slider-wrap">
+    <div class="cat-slider" id="catSlider">
+      {% for category in categories %}
+      <div class="cat-slide reveal" style="transition-delay: {{ forloop.counter0 }}00ms">
+        <a href="{% url 'category' category.slug %}" class="cat-card">
+
+          {% if category.sample_cover %}
+            {# Use a real book cover from this category as the card background #}
+            <img src="{{ category.sample_cover }}" alt="{{ category.name }}"
+                 class="cat-card-img" loading="lazy" />
+          {% elif category.hero_image %}
+            <img src="{{ category.hero_image.url }}" alt="{{ category.name }}"
+                 class="cat-card-img" />
+          {% else %}
+            {# Fallback: each category gets its own gradient colour #}
+            <div class="cat-card-gradient cat-grad-{{ category.slug }}"></div>
+          {% endif %}
+
+          <div class="cat-card-overlay"></div>
+          <div class="cat-card-content">
+            <span class="cat-card-icon">{{ category.icon }}</span>
+            <span class="cat-card-tag">{{ category.name|upper }}</span>
+            <h3 class="cat-card-title">{{ category.tag_line }}</h3>
+            <span class="cat-card-count">{{ category.books.count }} books</span>
+          </div>
+        </a>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<!-- ── Featured Books ── -->
+<section class="featured" id="featured">
+  <div class="section-header reveal">
+    <div class="section-header-left">
+      <span class="section-tag">HANDPICKED</span>
+      <h2 class="section-title">FEATURED BOOKS</h2>
+    </div>
+    <div class="filter-bar">
+      <button class="filter-btn active" data-filter="All" onclick="setFilter('All', this)">All</button>
+      {% for category in categories %}
+      <button class="filter-btn" data-filter="{{ category.name }}" onclick="setFilter('{{ category.name }}', this)">{{ category.name }}</button>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="books-grid" id="booksGrid">
+    {% for book in featured_books %}
+    <div class="book-card reveal" data-category="{{ book.category.name }}" style="transition-delay: {{ forloop.counter0 }}40ms">
+      <a href="{% url 'book_detail' book.slug %}">
+        <div class="book-cover-wrap">
+          <img src="{{ book.get_cover }}" alt="{{ book.title }}" class="book-cover" loading="lazy"
+               onerror="this.src='{% static 'images/default_cover.png' %}'" />
+          {% if book.is_bestseller %}
+          <span class="book-badge badge-bestseller">BESTSELLER</span>
+          {% elif book.is_featured %}
+          <span class="book-badge badge-featured">FEATURED</span>
+          {% endif %}
+        </div>
+      </a>
+      <div class="book-info">
+        <span class="book-category">{{ book.category.name }}</span>
+        <a href="{% url 'book_detail' book.slug %}"><h3 class="book-title">{{ book.title }}</h3></a>
+        <p class="book-author">{{ book.authors }}</p>
+        <div class="book-rating">★ {{ book.rating }}</div>
+        <div class="book-price-row">
+          <span class="book-price">₹{{ book.price }}</span>
+          {% if book.original_price %}
+          <span class="book-original-price">₹{{ book.original_price }}</span>
+          <span class="book-discount">{{ book.discount_percent }}% OFF</span>
+          {% endif %}
+        </div>
+      </div>
+      <div class="book-card-footer">
+        <button class="btn-cart" onclick="addToCart({{ book.pk }}, this)">+ CART</button>
+        <form method="POST" action="{% url 'buy_now' book.pk %}" style="flex:1">
+          {% csrf_token %}
+          <button type="submit" class="btn-buy-now">BUY NOW</button>
+        </form>
+      </div>
+    </div>
+    {% empty %}
+    <div style="grid-column:1/-1; text-align:center; padding:80px 0; color:var(--text-muted);">
+      <p style="font-family:var(--font-display); font-size:1.5rem; margin-bottom:12px;">No books yet.</p>
+      <p>Run <code style="background:var(--bg-3); padding:4px 10px; border-radius:6px;">python manage.py seed_books</code> to load books.</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- ── About Banner ── -->
+<section class="about-banner" id="about">
+  <div class="about-inner reveal">
+    <div class="about-tag-row">
+      <span class="about-tag">ABOUT US · 2025</span>
+      <h2 class="about-title">ABOUT</h2>
+    </div>
+    <p class="about-desc">At Bookverse, we believe every book is a universe waiting to be entered. We handpick titles across every genre, curating collections that challenge, inspire, and captivate.</p>
+    <div class="about-stats">
+      <div class="stat"><span class="stat-num">50K+</span><span class="stat-label">Titles Available</span></div>
+      <div class="stat"><span class="stat-num">{{ categories.count }}+</span><span class="stat-label">Categories</span></div>
+      <div class="stat"><span class="stat-num">200K+</span><span class="stat-label">Happy Readers</span></div>
+      <div class="stat"><span class="stat-num">4.9★</span><span class="stat-label">Avg Rating</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ── Newsletter ── -->
+<section class="newsletter">
+  <div class="newsletter-inner reveal">
+    <span class="section-tag">STAY UPDATED</span>
+    <h2 class="newsletter-title">JOIN THE VERSE</h2>
+    <p class="newsletter-sub">New arrivals, exclusive deals, and curated reading lists.</p>
+    <form class="newsletter-form" onsubmit="event.preventDefault(); showToast('✅ Subscribed! Welcome to the Verse.')">
+      <input type="email" placeholder="your@email.com" class="newsletter-input" required />
+      <button type="submit" class="newsletter-btn">SUBSCRIBE →</button>
+    </form>
+  </div>
+</section>
+
+<!-- ── Footer ── -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-brand">
+      <span class="footer-logo">BOOKVERSE</span>
+      <span class="footer-tagline">YOUR UNIVERSE OF BOOKS</span>
+    </div>
+    <div class="footer-links">
+      <div class="footer-col">
+        <h4>CATEGORIES</h4>
+        {% for category in categories %}
+        <a href="{% url 'category' category.slug %}">{{ category.name }}</a>
+        {% endfor %}
+      </div>
+      <div class="footer-col">
+        <h4>SUPPORT</h4>
+        <a href="#">Help Center</a>
+        <a href="#">Shipping Info</a>
+        <a href="#">Returns</a>
+        <a href="#">Contact Us</a>
+      </div>
+      <div class="footer-col">
+        <h4>ACCOUNT</h4>
+        {% if user.is_authenticated %}
+        <a href="{% url 'logout' %}">Logout</a>
+        {% else %}
+        <a href="{% url 'login' %}">Login</a>
+        <a href="{% url 'register' %}">Register</a>
+        {% endif %}
+        <a href="{% url 'cart' %}">My Cart</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Bookverse. All rights reserved.</span>
+    <span>Privacy · Terms · Cookies</span>
+  </div>
+</footer>
+
+{% endblock %}

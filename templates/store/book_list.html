@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}All Books — Bookverse{% endblock %}
+
+{% block content %}
+<section class="featured" style="padding-top: 120px;">
+  <div class="section-header reveal">
+    <div class="section-header-left">
+      <span class="section-tag">EXPLORE</span>
+      <h1 class="section-title">ALL BOOKS</h1>
+    </div>
+  </div>
+  <div class="books-grid" id="booksGrid">
+    {% for book in books %}
+    <div class="book-card reveal" data-category="{{ book.category.name }}">
+      <a href="{% url 'book_detail' book.slug %}">
+        <div class="book-cover-wrap">
+          <img src="{{ book.get_cover }}" alt="{{ book.title }}" class="book-cover" loading="lazy"
+               onerror="this.src='{% static 'images/default_cover.png' %}'" />
+          {% if book.is_bestseller %}
+          <span class="book-badge badge-bestseller">BESTSELLER</span>
+          {% endif %}
+        </div>
+      </a>
+      <div class="book-info">
+        <span class="book-category">{{ book.category.name }}</span>
+        <a href="{% url 'book_detail' book.slug %}"><h3 class="book-title">{{ book.title }}</h3></a>
+        <p class="book-author">{{ book.authors }}</p>
+        <div class="book-rating">★ {{ book.rating }}</div>
+        <div class="book-price-row">
+          <span class="book-price">₹{{ book.price }}</span>
+        </div>
+      </div>
+      <div class="book-card-footer">
+        <button class="btn-cart" onclick="addToCart({{ book.pk }}, this)">+ CART</button>
+        <form method="POST" action="{% url 'buy_now' book.pk %}" style="flex:1">
+          {% csrf_token %}
+          <button type="submit" class="btn-buy-now">BUY NOW</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Pagination -->
+  {% if books.has_other_pages %}
+  <div style="text-align:center; margin-top:60px; display:flex; gap:12px; justify-content:center;">
+    {% if books.has_previous %}
+    <a href="?page={{ books.previous_page_number }}" class="hero-cta">← PREV</a>
+    {% endif %}
+    <span style="font-family:var(--font-mono); color:var(--text-muted); padding:10px 16px;">
+      {{ books.number }} / {{ books.paginator.num_pages }}
+    </span>
+    {% if books.has_next %}
+    <a href="?page={{ books.next_page_number }}" class="hero-cta">NEXT →</a>
+    {% endif %}
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

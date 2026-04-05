@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Checkout — Bookverse{% endblock %}
+
+{% block extra_head %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+  <h1 class="section-title" style="margin-bottom:48px">CHECKOUT</h1>
+
+  <div class="checkout-grid">
+    <!-- Form -->
+    <div class="checkout-form-section">
+      <h2>Delivery Details</h2>
+      <form id="checkoutForm">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group">
+            <label for="full_name">Full Name</label>
+            <input type="text" id="full_name" name="full_name" class="form-input" required
+                   value="{% if user.is_authenticated %}{{ user.get_full_name }}{% endif %}" placeholder="John Doe" />
+          </div>
+          <div class="form-group">
+            <label for="phone">Phone Number</label>
+            <input type="tel" id="phone" name="phone" class="form-input" required placeholder="+91 9876543210" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" name="email" class="form-input" required
+                 value="{% if user.is_authenticated %}{{ user.email }}{% endif %}" placeholder="you@example.com" />
+        </div>
+        <div class="form-group">
+          <label for="address">Street Address</label>
+          <textarea id="address" name="address" class="form-textarea" required placeholder="House no., Street name, Area..."></textarea>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">City</label>
+            <input type="text" id="city" name="city" class="form-input" required placeholder="Mumbai" />
+          </div>
+          <div class="form-group">
+            <label for="state">State</label>
+            <input type="text" id="state" name="state" class="form-input" required placeholder="Maharashtra" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="pincode">PIN Code</label>
+          <input type="text" id="pincode" name="pincode" class="form-input" required placeholder="400001" maxlength="6" />
+        </div>
+
+        <button type="submit" class="btn-pay" id="payBtn">
+          PAY ₹{{ cart.total }} SECURELY →
+        </button>
+        <div class="razorpay-badge">
+          🔒 Secured by Razorpay · 256-bit SSL Encryption
+        </div>
+      </form>
+    </div>
+
+    <!-- Order Summary -->
+    <div class="order-summary-card">
+      <h3>ORDER SUMMARY</h3>
+      {% for item in items %}
+      <div class="order-item">
+        <img src="{{ item.book.get_cover }}" alt="{{ item.book.title }}" class="order-item-img"
+             onerror="this.src='{% static 'images/default_cover.png' %}'" />
+        <div>
+          <p class="order-item-title">{{ item.book.title|truncatechars:40 }}</p>
+          <p class="order-item-meta">{{ item.book.authors }} · Qty: {{ item.quantity }}</p>
+        </div>
+        <span class="order-item-price">₹{{ item.subtotal }}</span>
+      </div>
+      {% endfor %}
+
+      <div style="border-top:1px solid var(--border); margin-top:20px; padding-top:20px;">
+        <div class="summary-row"><span>Subtotal</span><span>₹{{ cart.total }}</span></div>
+        <div class="summary-row"><span>Shipping</span><span style="color:var(--teal)">FREE</span></div>
+        <div class="summary-row total"><span>TOTAL</span><span>₹{{ cart.total }}</span></div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+  // Razorpay key passed from Django
+  window.RAZORPAY_KEY = '{{ razorpay_key }}';
+</script>
+{% endblock %}

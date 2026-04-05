@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Your Cart — Bookverse{% endblock %}
+
+{% block content %}
+<div class="cart-page">
+  <h1 class="cart-page-title">YOUR CART</h1>
+
+  {% if items %}
+  <div class="cart-page-grid">
+    <!-- Items -->
+    <div>
+      {% for item in items %}
+      <div class="cart-page-item reveal" id="cart-item-{{ item.pk }}">
+        <img src="{{ item.book.get_cover }}" alt="{{ item.book.title }}" class="cart-page-img"
+             onerror="this.src='{% static 'images/default_cover.png' %}'" />
+        <div>
+          <a href="{% url 'book_detail' item.book.slug %}">
+            <p style="font-weight:600; color:var(--white); margin-bottom:4px">{{ item.book.title }}</p>
+          </a>
+          <p style="font-size:0.8rem; color:var(--text-muted); margin-bottom:12px">{{ item.book.authors }}</p>
+          <div class="qty-controls">
+            <button class="qty-btn" onclick="updateQty({{ item.pk }}, -1)">−</button>
+            <span class="qty-num" id="qty-{{ item.pk }}">{{ item.quantity }}</span>
+            <button class="qty-btn" onclick="updateQty({{ item.pk }}, 1)">+</button>
+            <button class="cart-item-remove" onclick="removeFromCart({{ item.pk }}, this)">REMOVE</button>
+          </div>
+        </div>
+        <div style="text-align:right">
+          <p class="book-price" id="sub-{{ item.pk }}">₹{{ item.subtotal }}</p>
+          <p style="font-size:0.75rem; color:var(--text-muted)">₹{{ item.book.price }} each</p>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+
+    <!-- Summary -->
+    <div class="cart-summary">
+      <h3>ORDER SUMMARY</h3>
+      <div class="summary-row"><span>Subtotal</span><span id="summaryTotal">₹{{ cart.total }}</span></div>
+      <div class="summary-row"><span>Shipping</span><span>Free</span></div>
+      <div class="summary-row"><span>Taxes</span><span>Included</span></div>
+      <div class="summary-row total"><span>TOTAL</span><span>₹{{ cart.total }}</span></div>
+      <a href="{% url 'checkout' %}" class="btn-checkout-page">PROCEED TO CHECKOUT →</a>
+      <a href="{% url 'home' %}#featured" style="display:block; text-align:center; margin-top:14px; font-family:var(--font-mono); font-size:0.68rem; color:var(--text-muted); letter-spacing:1.5px">
+        CONTINUE SHOPPING
+      </a>
+    </div>
+  </div>
+
+  {% else %}
+  <div style="text-align:center; padding:100px 0">
+    <p style="font-family:var(--font-display); font-size:3rem; color:var(--white); margin-bottom:16px">EMPTY CART</p>
+    <p style="color:var(--text-muted); margin-bottom:40px">Your cart is empty. Let's fix that!</p>
+    <a href="{% url 'home' %}#featured" class="hero-cta" style="display:inline-flex">BROWSE BOOKS →</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

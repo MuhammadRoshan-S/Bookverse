@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Profile — Bookverse{% endblock %}
+
+{% block content %}
+<div class="profile-settings-page">
+  <div class="profile-settings-card">
+
+    <!-- Header -->
+    <div class="ps-header">
+      <div class="ps-avatar-wrap">
+        {% if profile.avatar %}
+        <img src="{{ profile.avatar.url }}" alt="{{ user.username }}" class="ps-avatar-img" id="psAvatarPreview" />
+        {% else %}
+        <div class="ps-avatar-initial" id="psAvatarInitial">{{ user.username|slice:":1"|upper }}</div>
+        <img src="" alt="" class="ps-avatar-img" id="psAvatarPreview" style="display:none" />
+        {% endif %}
+        <label class="ps-avatar-change" for="avatarInput" title="Change photo">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 19a2 2 0 01-2 2H3a2 2 0 01-2-2V8a2 2 0 012-2h4l2-3h6l2 3h4a2 2 0 012 2z"/>
+            <circle cx="12" cy="13" r="4"/>
+          </svg>
+        </label>
+      </div>
+      <div>
+        <h1 class="ps-username">{{ user.username }}</h1>
+        <p class="ps-email">{{ user.email|default:"No email set" }}</p>
+        <p class="ps-joined">Member since {{ user.date_joined|date:"F Y" }}</p>
+      </div>
+    </div>
+
+    <!-- Form -->
+    <form method="POST" enctype="multipart/form-data" class="ps-form">
+      {% csrf_token %}
+      <input type="file" id="avatarInput" name="avatar" accept="image/*" style="display:none" onchange="previewAvatar(this)" />
+
+      <div class="form-group">
+        <label>BIO</label>
+        <textarea name="bio" class="form-textarea" rows="3" maxlength="300"
+                  placeholder="Tell us about yourself...">{{ profile.bio }}</textarea>
+        <small style="color:var(--text-muted); font-size:0.72rem; font-family:var(--font-mono)">MAX 300 CHARS</small>
+      </div>
+
+      <div class="ps-save-row">
+        <button type="submit" class="btn-auth">SAVE CHANGES →</button>
+        <a href="{% url 'home' %}" style="font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted); letter-spacing:1.5px; align-self:center">CANCEL</a>
+      </div>
+    </form>
+
+    <!-- Quick links -->
+    <div class="ps-links">
+      <a href="{% url 'cart' %}" class="ps-link-btn">🛒 My Cart</a>
+      <a href="{% url 'checkout' %}" class="ps-link-btn">📦 My Orders</a>
+      <a href="{% url 'search' %}" class="ps-link-btn">🔍 Search Books</a>
+      <a href="{% url 'logout' %}" class="ps-link-btn ps-link-danger">→ Logout</a>
+    </div>
+  </div>
+</div>
+
+<script>
+function previewAvatar(input) {
+  const preview = document.getElementById('psAvatarPreview');
+  const initial = document.getElementById('psAvatarInitial');
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = e => {
+      preview.src = e.target.result;
+      preview.style.display = 'block';
+      if (initial) initial.style.display = 'none';
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+</script>
+{% endblock %}

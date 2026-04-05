@@ -1,0 +1,5 @@
+django
+razorpay
+requests
+Pillow
+python-dotenv

@@ -1,0 +1,87 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Wishlist — Bookverse{% endblock %}
+
+{% block content %}
+<div class="wishlist-page">
+
+  <div class="wishlist-header reveal">
+    <span class="section-tag">SAVED BOOKS</span>
+    <h1 class="section-title">MY WISHLIST</h1>
+    <p class="wishlist-sub">{{ wishlist_items|length }} book{{ wishlist_items|length|pluralize }} saved</p>
+  </div>
+
+  {% if wishlist_items %}
+  <div class="wishlist-grid">
+    {% for item in wishlist_items %}
+    <div class="wl-card reveal" id="wl-card-{{ item.book.pk }}">
+      <a href="{% url 'book_detail' item.book.slug %}">
+        <div class="wl-cover-wrap">
+          <img src="{{ item.book.get_cover }}" alt="{{ item.book.title }}"
+               class="wl-cover" loading="lazy"
+               onerror="this.src='{% static 'images/default_cover.png' %}'" />
+          {% if item.book.is_bestseller %}
+          <span class="book-badge badge-bestseller">BESTSELLER</span>
+          {% endif %}
+        </div>
+      </a>
+      <div class="wl-info">
+        <span class="wl-category">{{ item.book.category.name }}</span>
+        <a href="{% url 'book_detail' item.book.slug %}">
+          <h3 class="wl-title">{{ item.book.title|truncatechars:50 }}</h3>
+        </a>
+        <p class="wl-author">{{ item.book.authors|truncatechars:35 }}</p>
+        <div class="wl-price-row">
+          <span class="wl-price">₹{{ item.book.price }}</span>
+          {% if item.book.original_price %}
+          <span class="wl-original">₹{{ item.book.original_price }}</span>
+          {% endif %}
+        </div>
+        <div class="wl-actions">
+          <button class="btn-cart" onclick="addToCart({{ item.book.pk }}, this)">+ CART</button>
+          <form method="POST" action="{% url 'buy_now' item.book.pk %}" style="flex:1">
+            {% csrf_token %}
+            <button type="submit" class="btn-buy-now">BUY NOW</button>
+          </form>
+          <button class="wl-remove-btn"
+                  onclick="removeWishlist({{ item.book.pk }}, this)"
+                  title="Remove from wishlist">♥</button>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="wishlist-empty">
+    <div class="wishlist-empty-icon">♡</div>
+    <h2>Your wishlist is empty</h2>
+    <p>Browse books and click the ♡ heart to save them here.</p>
+    <a href="{% url 'book_list' %}" class="hero-cta" style="display:inline-block; margin-top:24px">BROWSE BOOKS →</a>
+  </div>
+  {% endif %}
+</div>
+
+<script>
+function removeWishlist(bookId, btn) {
+  fetch(`/wishlist/toggle/${bookId}/`, {
+    method: 'POST',
+    headers: { 'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]')?.value || getCsrf() },
+    credentials: 'same-origin',
+  })
+  .then(r => r.json())
+  .then(data => {
+    if (data.success && !data.wishlisted) {
+      const card = document.getElementById(`wl-card-${bookId}`);
+      if (card) {
+        card.style.transition = 'all 0.4s ease';
+        card.style.opacity = '0';
+        card.style.transform = 'scale(0.9)';
+        setTimeout(() => card.remove(), 400);
+      }
+    }
+  });
+}
+</script>
+{% endblock %}

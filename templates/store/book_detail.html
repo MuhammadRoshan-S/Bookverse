@@ -1,0 +1,102 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ book.title }} — Bookverse{% endblock %}
+{% block meta_desc %}{{ book.description|truncatechars:160 }}{% endblock %}
+
+{% block content %}
+<div class="book-detail-section">
+  <!-- Cover -->
+  <div class="book-detail-cover">
+    <img src="{{ book.get_cover }}" alt="{{ book.title }}" class="book-detail-img"
+         onerror="this.src='{% static 'images/default_cover.png' %}'" />
+  </div>
+
+  <!-- Info -->
+  <div class="book-detail-info">
+    <span class="book-detail-category">
+      <a href="{% url 'category' book.category.slug %}" style="color:inherit">{{ book.category.name|upper }}</a>
+    </span>
+    <h1 class="book-detail-title">{{ book.title }}</h1>
+    <p class="book-detail-author">by {{ book.authors }}</p>
+
+    <div class="book-detail-meta">
+      <span class="meta-pill">★ {{ book.rating }}</span>
+      {% if book.page_count %}<span class="meta-pill">{{ book.page_count }} pages</span>{% endif %}
+      {% if book.published_date %}<span class="meta-pill">{{ book.published_date }}</span>{% endif %}
+      {% if book.publisher %}<span class="meta-pill">{{ book.publisher }}</span>{% endif %}
+      {% if book.language %}<span class="meta-pill">{{ book.language|upper }}</span>{% endif %}
+      {% if book.is_bestseller %}<span class="meta-pill" style="background:var(--orange);color:var(--bg);border-color:transparent">BESTSELLER</span>{% endif %}
+    </div>
+
+    {% if book.description %}
+    <p class="book-detail-description">{{ book.description }}</p>
+    {% endif %}
+
+    <div class="book-detail-price-row">
+      <span class="detail-price">₹{{ book.price }}</span>
+      {% if book.original_price %}
+      <span class="detail-original-price">₹{{ book.original_price }}</span>
+      <span class="detail-discount-badge">{{ book.discount_percent }}% OFF</span>
+      {% endif %}
+    </div>
+
+    <div class="book-detail-actions">
+      <button class="btn-add-detail" onclick="addToCart({{ book.pk }}, this)">+ ADD TO CART</button>
+      <form method="POST" action="{% url 'buy_now' book.pk %}" style="display:inline">
+        {% csrf_token %}
+        <button type="submit" class="btn-add-detail" style="background:var(--red); color:var(--white)">BUY NOW →</button>
+      </form>
+      <!-- Wishlist button — calls toggleWishlist() from app.js -->
+      <button
+        id="wishlistBtn-{{ book.pk }}"
+        class="btn-wishlist {% if is_wishlisted %}wishlisted{% endif %}"
+        onclick="toggleWishlist({{ book.pk }}, this)"
+        title="{% if is_wishlisted %}Remove from wishlist{% else %}Add to wishlist{% endif %}">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="{% if is_wishlisted %}currentColor{% else %}none{% endif %}"
+             stroke="currentColor" stroke-width="2" style="margin-right:6px; vertical-align:middle">
+          <path d="M20.84 4.61a5.5 5.5 0 00-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 00-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 000-7.78z"/>
+        </svg>
+        {% if is_wishlisted %}WISHLISTED{% else %}WISHLIST{% endif %}
+      </button>
+    </div>
+
+    <div style="margin-top:40px; padding-top:32px; border-top:1px solid var(--border);">
+      <p style="font-family:var(--font-mono); font-size:0.68rem; letter-spacing:2px; color:var(--text-muted);">
+        IN STOCK: {{ book.stock }} copies · Free delivery on orders above ₹499
+      </p>
+    </div>
+  </div>
+</div>
+
+<!-- Related Books -->
+{% if related_books %}
+<section class="related-section">
+  <h2 class="section-title" style="font-size:2rem; margin-bottom:36px">YOU MAY<br/>ALSO LIKE</h2>
+  <div class="books-grid">
+    {% for rb in related_books %}
+    <div class="book-card reveal">
+      <a href="{% url 'book_detail' rb.slug %}">
+        <div class="book-cover-wrap">
+          <img src="{{ rb.get_cover }}" alt="{{ rb.title }}" class="book-cover" loading="lazy"
+               onerror="this.src='{% static 'images/default_cover.png' %}'" />
+        </div>
+      </a>
+      <div class="book-info">
+        <span class="book-category">{{ rb.category.name }}</span>
+        <a href="{% url 'book_detail' rb.slug %}"><h3 class="book-title">{{ rb.title }}</h3></a>
+        <p class="book-author">{{ rb.authors }}</p>
+        <div class="book-price-row">
+          <span class="book-price">₹{{ rb.price }}</span>
+        </div>
+      </div>
+      <div class="book-card-footer">
+        <button class="btn-cart" onclick="addToCart({{ rb.pk }}, this)">ADD TO CART</button>
+        <a href="{% url 'book_detail' rb.slug %}" class="btn-detail">VIEW</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+{% endblock %}
