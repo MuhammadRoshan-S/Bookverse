@@ -2169,6 +2169,13 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   .nav-right { gap: 4px; }
   .nav-wishlist-btn, .nav-cart-icon { width: 36px; height: 36px; }
   .profile-avatar { width: 34px; height: 34px; font-size: 0.85rem; }
+  
+  /* Fix nav login button on mobile so it doesn't wrap "LOGIN ->" and shrink it */
+  .nav-login-btn {
+    padding: 6px 12px !important;
+    font-size: 0.6rem !important;
+    white-space: nowrap;
+  }
 
   /* Show the hero-left CTA on mobile (hero-right is hidden) */
   .hero-left .hero-cta { display: inline-flex !important; }
@@ -2185,10 +2192,11 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
     gap: 0 !important;
   }
 
-  /* Hero-left: pinned to bottom via absolute — bulletproof cross-browser */
+  /* Hero-left: pinned below nav via absolute */
   .hero-left {
     position: absolute !important;
-    bottom: 70px !important;  /* above the ticker */
+    top: 100px !important;  /* just below the 60px nav bar + some breathing room */
+    bottom: auto !important;
     left: 20px !important;
     right: 20px !important;
     margin: 0 !important;
