@@ -1,10 +1,10 @@
-/* =============================================
-   BOOKVERSE — Premium Dark Editorial CSS
+﻿/* =============================================
+   BOOKVERSE â€” Premium Dark Editorial CSS
    ============================================= */
 
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap');
 
-/* ── Reset & Base ── */
+/* â”€â”€ Reset & Base â”€â”€ */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 :root {
@@ -38,7 +38,7 @@ html {
   overflow-x: hidden;   /* prevent any horizontal scroll on all viewports */
 }
 
-/* Hide the hero-left CTA on desktop — it's only for mobile when hero-right is hidden */
+/* Hide the hero-left CTA on desktop â€” it's only for mobile when hero-right is hidden */
 .hero-left .hero-cta { display: none; }
 
 body {
@@ -56,7 +56,7 @@ img { max-width: 100%; display: block; }
 button { cursor: none; border: none; background: none; font-family: inherit; }
 input, textarea, select { font-family: inherit; }
 
-/* ── Custom Cursor ── */
+/* â”€â”€ Custom Cursor â”€â”€ */
 .cursor {
   position: fixed; top: 0; left: 0; z-index: 9999;
   width: 10px; height: 10px;
@@ -82,7 +82,7 @@ input, textarea, select { font-family: inherit; }
   background: rgba(255,255,255,0.04);
 }
 
-/* ── Navigation ── */
+/* â”€â”€ Navigation â”€â”€ */
 .nav {
   position: fixed; top: 0; left: 0; right: 0;
   z-index: 1000;
@@ -96,12 +96,12 @@ input, textarea, select { font-family: inherit; }
   border-bottom: 1px solid var(--border);
 }
 
-/* ── BV Slide-Reveal Logo ── */
+/* â”€â”€ BV Slide-Reveal Logo â”€â”€ */
 .nav-left { flex: 1; }
 .nav-logo-bv {
   display: inline-flex;
   align-items: baseline;
-  /* NO overflow:hidden here — it was clipping V and the final E */
+  /* NO overflow:hidden here â€” it was clipping V and the final E */
   font-family: var(--font-display);
   font-weight: 800;
   font-size: 1.35rem;
@@ -110,12 +110,12 @@ input, textarea, select { font-family: inherit; }
   white-space: nowrap;
   text-decoration: none;
 }
-/* "B" — always visible, never moves */
+/* "B" â€” always visible, never moves */
 .logo-b {
   display: inline-block;
   flex-shrink: 0;
 }
-/* "OOKVERSE" — hidden by default, slides in on hover */
+/* "OOKVERSE" â€” hidden by default, slides in on hover */
 .logo-ookverse {
   display: inline-block;
   max-width: 0;
@@ -129,7 +129,7 @@ input, textarea, select { font-family: inherit; }
     opacity   0.35s ease 0.08s,
     transform 0.4s ease 0.05s;
 }
-/* "V" — visible by default, fades out on hover */
+/* "V" â€” visible by default, fades out on hover */
 .logo-v {
   display: inline-block;
   opacity: 1;
@@ -151,7 +151,7 @@ input, textarea, select { font-family: inherit; }
   max-width: 0;
 }
 
-/* ── Center Pill Nav ── */
+/* â”€â”€ Center Pill Nav â”€â”€ */
 .nav-center { display: flex; justify-content: center; }
 .nav-pill {
   background: rgba(255,255,255,0.06);
@@ -176,7 +176,7 @@ input, textarea, select { font-family: inherit; }
   background: rgba(255,255,255,0.1);
 }
 
-/* ── Right Side ── */
+/* â”€â”€ Right Side â”€â”€ */
 .nav-right {
   flex: 1;
   display: flex; align-items: center; justify-content: flex-end;
@@ -210,7 +210,7 @@ input, textarea, select { font-family: inherit; }
 }
 .nav-login-btn:hover { background: rgba(240,240,240,0.85); }
 
-/* ── Profile Avatar Button ── */
+/* â”€â”€ Profile Avatar Button â”€â”€ */
 .profile-wrap { position: relative; }
 .profile-avatar {
   width: 42px; height: 42px; border-radius: 50%;
@@ -223,7 +223,7 @@ input, textarea, select { font-family: inherit; }
 }
 .profile-avatar:hover { border-color: rgba(255,255,255,0.55); transform: scale(1.06); }
 
-/* ── Profile Dropdown (pdd- namespace to avoid inheritance conflicts) ── */
+/* â”€â”€ Profile Dropdown (pdd- namespace to avoid inheritance conflicts) â”€â”€ */
 .profile-dropdown {
   position: absolute;
   top: calc(100% + 14px); right: 0;
@@ -281,7 +281,7 @@ input, textarea, select { font-family: inherit; }
 /* Separator */
 .pdd-sep { height: 1px; background: rgba(255,255,255,0.07); margin: 0; }
 
-/* Menu items container — forces block layout */
+/* Menu items container â€” forces block layout */
 .pdd-menu {
   display: flex !important;
   flex-direction: column !important;
@@ -326,7 +326,7 @@ input, textarea, select { font-family: inherit; }
 .pdd-logout:hover { color: var(--red); background: rgba(200,57,43,0.07); }
 
 
-/* ── Hero ── */
+/* â”€â”€ Hero â”€â”€ */
 .hero {
   position: relative;
   height: 100vh;
@@ -412,7 +412,7 @@ input, textarea, select { font-family: inherit; }
 }
 .hero-cta:hover { background: rgba(240,240,240,0.85); transform: translateY(-2px); }
 
-/* ── Ticker ── */
+/* â”€â”€ Ticker â”€â”€ */
 .hero-ticker {
   position: relative; z-index: 1;
   background: rgba(255,255,255,0.04);
@@ -436,7 +436,7 @@ input, textarea, select { font-family: inherit; }
   to { transform: translateX(-50%); }
 }
 
-/* ── Section Headers ── */
+/* â”€â”€ Section Headers â”€â”€ */
 .section-header {
   display: flex;
   align-items: flex-start;
@@ -470,7 +470,7 @@ input, textarea, select { font-family: inherit; }
   align-self: flex-end;
 }
 
-/* ── Categories Bento ── */
+/* â”€â”€ Categories Bento â”€â”€ */
 .categories {
   padding: 100px 60px;
   background: var(--bg);
@@ -557,7 +557,7 @@ input, textarea, select { font-family: inherit; }
   background: rgba(255,255,255,0.1);
 }
 
-/* ── Books Grid ── */
+/* â”€â”€ Books Grid â”€â”€ */
 .featured {
   padding: 100px 60px;
   background: var(--bg-2);
@@ -718,7 +718,7 @@ input, textarea, select { font-family: inherit; }
 }
 .btn-detail:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
 
-/* ── About Banner ── */
+/* â”€â”€ About Banner â”€â”€ */
 .about-banner {
   position: relative;
   padding: 120px 60px;
@@ -796,7 +796,7 @@ input, textarea, select { font-family: inherit; }
   text-transform: uppercase;
 }
 
-/* ── Newsletter ── */
+/* â”€â”€ Newsletter â”€â”€ */
 .newsletter {
   padding: 100px 60px;
   background: var(--bg-2);
@@ -846,7 +846,7 @@ input, textarea, select { font-family: inherit; }
 }
 .newsletter-btn:hover { background: var(--text-muted); }
 
-/* ── Footer ── */
+/* â”€â”€ Footer â”€â”€ */
 .footer {
   background: var(--bg);
   border-top: 1px solid var(--border);
@@ -910,7 +910,7 @@ input, textarea, select { font-family: inherit; }
   gap: 12px;
 }
 
-/* ── Cart Drawer ── */
+/* â”€â”€ Cart Drawer â”€â”€ */
 .cart-overlay {
   position: fixed; inset: 0;
   background: rgba(0,0,0,0.6);
@@ -1020,7 +1020,7 @@ input, textarea, select { font-family: inherit; }
 }
 .checkout-btn:hover { background: var(--text-muted); }
 
-/* ── Toast ── */
+/* â”€â”€ Toast â”€â”€ */
 .toast {
   position: fixed;
   bottom: 32px; left: 50%;
@@ -1044,7 +1044,7 @@ input, textarea, select { font-family: inherit; }
   opacity: 1;
 }
 
-/* ── Messages ── */
+/* â”€â”€ Messages â”€â”€ */
 .messages-container {
   position: fixed;
   top: 100px; right: 24px;
@@ -1071,7 +1071,7 @@ input, textarea, select { font-family: inherit; }
   to { transform: translateX(0); opacity: 1; }
 }
 
-/* ── Category Page ── */
+/* â”€â”€ Category Page â”€â”€ */
 .category-hero {
   position: relative;
   height: 50vh;
@@ -1136,7 +1136,7 @@ input, textarea, select { font-family: inherit; }
   cursor: none;
 }
 
-/* ── Book Detail ── */
+/* â”€â”€ Book Detail â”€â”€ */
 .book-detail-section {
   padding: 140px 60px 80px;
   display: grid;
@@ -1267,7 +1267,7 @@ input, textarea, select { font-family: inherit; }
   background: none;
 }
 
-/* ── Cart Page ── */
+/* â”€â”€ Cart Page â”€â”€ */
 .cart-page { padding: 140px 60px 80px; max-width: 1100px; margin: 0 auto; }
 .cart-page-title {
   font-family: var(--font-display);
@@ -1364,7 +1364,7 @@ input, textarea, select { font-family: inherit; }
 }
 .btn-checkout-page:hover { background: var(--text-muted); }
 
-/* ── Checkout Page ── */
+/* â”€â”€ Checkout Page â”€â”€ */
 .checkout-page { padding: 120px 60px 80px; max-width: 1100px; margin: 0 auto; }
 .checkout-grid {
   display: grid;
@@ -1462,7 +1462,7 @@ input, textarea, select { font-family: inherit; }
 .order-item-meta { font-size: 0.72rem; color: var(--text-muted); }
 .order-item-price { font-family: var(--font-display); font-weight: 700; margin-left: auto; white-space: nowrap; }
 
-/* ── Search Page ── */
+/* â”€â”€ Search Page â”€â”€ */
 .search-page { padding: 120px 60px 80px; }
 .search-bar-wrap { margin-bottom: 60px; }
 .search-form {
@@ -1523,7 +1523,7 @@ input, textarea, select { font-family: inherit; }
   flex-shrink: 0;
 }
 
-/* ── Auth Pages ── */
+/* â”€â”€ Auth Pages â”€â”€ */
 .auth-page {
   min-height: 100vh;
   display: flex;
@@ -1583,7 +1583,7 @@ input, textarea, select { font-family: inherit; }
 .helptext { color: var(--text-muted); }
 .errorlist { color: var(--red); list-style: none; }
 
-/* ── Order Success ── */
+/* â”€â”€ Order Success â”€â”€ */
 .success-page {
   min-height: 100vh;
   display: flex;
@@ -1630,7 +1630,7 @@ input, textarea, select { font-family: inherit; }
 }
 .btn-continue:hover { background: var(--text-muted); }
 
-/* ── Pagination ── */
+/* â”€â”€ Pagination â”€â”€ */
 .pagination {
   display: flex;
   gap: 8px;
@@ -1654,7 +1654,7 @@ input, textarea, select { font-family: inherit; }
   background: rgba(255,255,255,0.06);
 }
 
-/* ── Scroll Reveal ── */
+/* â”€â”€ Scroll Reveal â”€â”€ */
 .reveal {
   opacity: 0;
   transform: translateY(30px);
@@ -1665,7 +1665,7 @@ input, textarea, select { font-family: inherit; }
   transform: translateY(0);
 }
 
-/* ── Related Books ── */
+/* â”€â”€ Related Books â”€â”€ */
 .related-section {
   padding: 80px 60px;
   background: var(--bg-2);
@@ -1673,7 +1673,7 @@ input, textarea, select { font-family: inherit; }
 }
 .related-section .section-title { font-size: 2rem; margin-bottom: 36px; }
 
-/* ── Responsive ── */
+/* â”€â”€ Responsive â”€â”€ */
 @media (max-width: 1024px) {
   .hero-content { padding: 0 40px 60px; }
   .categories, .featured, .about-banner, .newsletter, .footer { padding-left: 40px; padding-right: 40px; }
@@ -1702,11 +1702,11 @@ input, textarea, select { font-family: inherit; }
   .section-header { flex-direction: column; }
 }
 
-/* ══════════════════════════════════
-   NEW ADDITIONS — Carousel, Slider, Profile, Buy Now
-   ══════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   NEW ADDITIONS â€” Carousel, Slider, Profile, Buy Now
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── 3D Book Carousel ── */
+/* â”€â”€ 3D Book Carousel â”€â”€ */
 .trending-section {
   padding: 80px 0 180px;
   background: var(--bg);
@@ -1801,7 +1801,7 @@ input, textarea, select { font-family: inherit; }
 .carousel-prev { left: 40px; }
 .carousel-next { right: 40px; }
 
-/* ── Category Horizontal Slider ── */
+/* â”€â”€ Category Horizontal Slider â”€â”€ */
 .cat-nav-btns { display: flex; gap: 8px; align-self: center; }
 .cat-nav-btn {
   width: 44px; height: 44px; border-radius: 50%;
@@ -1854,7 +1854,7 @@ input, textarea, select { font-family: inherit; }
   color: rgba(255,255,255,0.4); display: block;
 }
 
-/* ── Buy Now Button ── */
+/* â”€â”€ Buy Now Button â”€â”€ */
 .btn-buy-now {
   width: 100%;
   font-family: var(--font-mono);
@@ -1867,7 +1867,7 @@ input, textarea, select { font-family: inherit; }
 .btn-buy-now:hover { background: #b03020; }
 .book-card-footer form { flex: 1; }
 
-/* ── Drawer Cart Items ── */
+/* â”€â”€ Drawer Cart Items â”€â”€ */
 .drawer-item {
   display: flex; gap: 12px; padding: 14px 0;
   border-bottom: 1px solid var(--border); align-items: center;
@@ -1890,14 +1890,14 @@ input, textarea, select { font-family: inherit; }
 }
 .drawer-item-remove:hover { color: var(--red); }
 
-/* ── Category Section (Override old bento) ── */
+/* â”€â”€ Category Section (Override old bento) â”€â”€ */
 .categories { padding: 80px 60px 100px; background: var(--bg-2); }
 
-/* When a book cover is used as category background — show it zoomed/cropped nicely */
+/* When a book cover is used as category background â€” show it zoomed/cropped nicely */
 .cat-card-img {
   width: 100%; height: 100%;
   object-fit: cover;
-  object-position: center top; /* show top of book cover — usually the most interesting part */
+  object-position: center top; /* show top of book cover â€” usually the most interesting part */
   position: absolute; inset: 0;
   transition: transform 0.7s ease;
   filter: brightness(0.75) saturate(1.2);  /* darken so text is readable, boost colours */
@@ -1917,7 +1917,7 @@ input, textarea, select { font-family: inherit; }
 .cat-grad-self-help     { background: linear-gradient(135deg, #2d0000 0%, #880000 50%, #ff4444 100%); }
 .cat-grad-non-fiction   { background: linear-gradient(135deg, #001a11 0%, #005533 50%, #00aa66 100%); }
 
-/* ── Carousel Detail Link ── */
+/* â”€â”€ Carousel Detail Link â”€â”€ */
 .carousel-detail-link {
   display: inline-block;
   margin-top: 10px;
@@ -1936,7 +1936,7 @@ a.carousel-card { text-decoration: none; display: block; }
 a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
 .carousel-cover { transition: transform 0.4s ease; }
 
-/* ── Profile Avatar Image (in nav button and dropdown) ── */
+/* â”€â”€ Profile Avatar Image (in nav button and dropdown) â”€â”€ */
 .profile-avatar-img {
   width: 100%; height: 100%;
   object-fit: cover; border-radius: 50%;
@@ -1948,7 +1948,7 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   display: block;
 }
 
-/* ── Profile Settings Page ── */
+/* â”€â”€ Profile Settings Page â”€â”€ */
 .profile-settings-page {
   min-height: 100vh;
   display: flex; align-items: center; justify-content: center;
@@ -2008,9 +2008,9 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
 .ps-link-danger { color: rgba(200,57,43,0.7); }
 .ps-link-danger:hover { color: var(--red); border-color: var(--red); background: rgba(200,57,43,0.06); }
 
-/* ══════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    WISHLIST
-   ══════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
 /* Nav wishlist button */
 .nav-wishlist-btn {
@@ -2071,11 +2071,11 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
 .wishlist-empty h2 { font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--white); margin-bottom: 12px; }
 .wishlist-empty p { color: var(--text-muted); margin-bottom: 8px; }
 
-/* ════════════════════════════════════════════════
-   MOBILE RESPONSIVE — Hamburger Menu
-   ════════════════════════════════════════════════ */
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
+   MOBILE RESPONSIVE â€” Hamburger Menu
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* Hamburger button — hidden on desktop */
+/* Hamburger button â€” hidden on desktop */
 .nav-hamburger {
   display: none;
   flex-direction: column; justify-content: center; align-items: center;
@@ -2092,7 +2092,7 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
 .nav-hamburger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
 .nav-hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
-/* Mobile nav drawer — always block positioned, hidden via max-height */
+/* Mobile nav drawer â€” always block positioned, hidden via max-height */
 .mobile-nav-drawer {
   position: fixed; top: 64px; left: 0; right: 0;
   background: rgba(9,9,9,0.97); backdrop-filter: blur(20px);
@@ -2129,11 +2129,11 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
 .mobile-nav-list a:last-child { border-bottom: none; }
 
 
-/* ════════════════════════════════════════════════
+/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    RESPONSIVE BREAKPOINTS
-   ════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ── Tablet + Mobile (≤ 1024px) — show hamburger, hide pill nav ── */
+/* â”€â”€ Tablet + Mobile (â‰¤ 1024px) â€” show hamburger, hide pill nav â”€â”€ */
 @media (max-width: 1024px) {
   .nav-center { display: none !important; }  /* hide pill nav, hamburger takes over */
   .nav-hamburger { display: flex !important; }
@@ -2156,7 +2156,7 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   .wishlist-grid { grid-template-columns: repeat(3, 1fr); }
 }
 
-/* ── Mobile (≤ 768px) ── */
+/* â”€â”€ Mobile (â‰¤ 768px) â”€â”€ */
 @media (max-width: 768px) {
   /* Cursor: restore default on touch devices */
   body { cursor: auto; }
@@ -2180,7 +2180,7 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   /* Show the hero-left CTA on mobile (hero-right is hidden) */
   .hero-left .hero-cta { display: inline-flex !important; }
 
-  /* ── Hero (mobile) ── */
+  /* â”€â”€ Hero (mobile) â”€â”€ */
   .hero { min-height: 100vh; overflow: hidden; position: relative; }
 
   /* Hero content fills height but doesn't position children */
@@ -2195,8 +2195,7 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   /* Hero-left: pinned below nav via absolute */
   .hero-left {
     position: absolute !important;
-    top: 100px !important;  /* just below the 60px nav bar + some breathing room */
-    bottom: auto !important;
+    top: 50% !important; transform: translateY(-50%) !important; bottom: auto !important;
     left: 20px !important;
     right: 20px !important;
     margin: 0 !important;
@@ -2218,7 +2217,7 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   /* Hero right: hide on mobile */
   .hero-right { display: none !important; }
 
-  /* ── Carousel — mini 3D coverflow on mobile (swipe to navigate) ── */
+  /* â”€â”€ Carousel â€” mini 3D coverflow on mobile (swipe to navigate) â”€â”€ */
   .trending-section { padding: 50px 0 180px; }  /* bottom padding shows info below scene */
   .carousel-scene {
     height: 280px !important;
@@ -2233,10 +2232,10 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
     width: 100% !important;
     height: 260px !important;
     transform-style: preserve-3d !important;
-    display: block !important;     /* NOT flex — back to JS-controlled */
+    display: block !important;     /* NOT flex â€” back to JS-controlled */
     padding: 0 !important;
   }
-  /* Items: JS controls all transforms — just reset flat overrides */
+  /* Items: JS controls all transforms â€” just reset flat overrides */
   .carousel-item,
   .carousel-item.active,
   .carousel-item.side,
@@ -2306,7 +2305,7 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   .footer-links { grid-template-columns: repeat(2, 1fr); }
   .trending-header { padding: 0 20px; margin-bottom: 30px; }
 
-  /* ── Book Detail page ── */
+  /* â”€â”€ Book Detail page â”€â”€ */
   .book-detail-section {
     grid-template-columns: 1fr !important;
     padding: 90px 20px 40px !important;
@@ -2324,16 +2323,16 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   .detail-price { font-size: 1.7rem; }
   .related-section { padding: 40px 20px 60px; }
 
-  /* ── Cart page ── */
+  /* â”€â”€ Cart page â”€â”€ */
   .cart-page { padding: 90px 20px 40px; }
   .cart-page-grid { grid-template-columns: 1fr; gap: 24px; }
   .cart-page-item { grid-template-columns: 60px 1fr auto; gap: 12px; }
 
-  /* ── Category page ── */
+  /* â”€â”€ Category page â”€â”€ */
   .books-section { padding: 90px 20px 40px; }
 }
 
-/* ── Small Mobile (≤ 480px) ── */
+/* â”€â”€ Small Mobile (â‰¤ 480px) â”€â”€ */
 @media (max-width: 480px) {
   .books-grid { grid-template-columns: 1fr; }
   .wishlist-grid { grid-template-columns: 1fr; }
@@ -2343,3 +2342,4 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   .newsletter-form { flex-direction: column; gap: 10px; }
   .newsletter-input, .newsletter-btn { width: 100%; }
 }
+
