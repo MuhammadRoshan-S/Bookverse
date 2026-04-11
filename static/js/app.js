@@ -390,17 +390,24 @@ if (sections.length && navLinks.length) {
   const items = Array.from(track.querySelectorAll('.carousel-item'));
   if (!items.length) return;
 
+  const isMobile = window.innerWidth <= 768;
   const total = items.length;
   let current = Math.floor(total / 2);
 
-  // Position config: offset from center, rotation, scale, opacity, zIndex
+  // Desktop uses bigger offsets; mobile uses compact values to fit the screen
   function getPosition(offset) {
     const absOff = Math.abs(offset);
-    if (absOff === 0) return { x: 0,            rotY: 0,         scale: 1,    opacity: 1,    z: 10, cls: 'active' };
-    if (absOff === 1) return { x: offset * 165, rotY: offset * -40, scale: 0.82, opacity: 0.88, z: 7,  cls: 'side' };
-    if (absOff === 2) return { x: offset * 270, rotY: offset * -50, scale: 0.66, opacity: 0.55, z: 5,  cls: 'side' };
-    if (absOff === 3) return { x: offset * 350, rotY: offset * -56, scale: 0.52, opacity: 0.28, z: 3,  cls: 'far' };
-    return                     { x: offset * 410, rotY: offset * -60, scale: 0.38, opacity: 0.1,  z: 1,  cls: 'far' };
+    if (isMobile) {
+      if (absOff === 0) return { x: 0,           rotY: 0,           scale: 1,    opacity: 1,    z: 10, cls: 'active' };
+      if (absOff === 1) return { x: offset * 100, rotY: offset * -38, scale: 0.75, opacity: 0.85, z: 7,  cls: 'side'   };
+      if (absOff === 2) return { x: offset * 175, rotY: offset * -48, scale: 0.55, opacity: 0.40, z: 5,  cls: 'side'   };
+      return                    { x: offset * 230, rotY: offset * -55, scale: 0.35, opacity: 0.10, z: 1,  cls: 'far'    };
+    }
+    if (absOff === 0) return { x: 0,            rotY: 0,           scale: 1,    opacity: 1,    z: 10, cls: 'active' };
+    if (absOff === 1) return { x: offset * 165, rotY: offset * -40, scale: 0.82, opacity: 0.88, z: 7,  cls: 'side'   };
+    if (absOff === 2) return { x: offset * 270, rotY: offset * -50, scale: 0.66, opacity: 0.55, z: 5,  cls: 'side'   };
+    if (absOff === 3) return { x: offset * 350, rotY: offset * -56, scale: 0.52, opacity: 0.28, z: 3,  cls: 'far'    };
+    return                    { x: offset * 410, rotY: offset * -60, scale: 0.38, opacity: 0.10, z: 1,  cls: 'far'    };
   }
 
   function updateCarousel(animate = true) {
@@ -438,6 +445,22 @@ if (sections.length && navLinks.length) {
     });
   });
 
+  // Touch swipe support for mobile
+  if (isMobile) {
+    const scene = track.closest('.carousel-scene') || track;
+    let touchStartX = 0;
+    scene.addEventListener('touchstart', e => {
+      touchStartX = e.touches[0].clientX;
+    }, { passive: true });
+    scene.addEventListener('touchend', e => {
+      const diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 40) {
+        current = diff > 0 ? (current + 1) % total : (current - 1 + total) % total;
+        updateCarousel();
+      }
+    }, { passive: true });
+  }
+
   // Auto-advance
   let autoTimer = setInterval(() => {
     current = (current + 1) % total;
@@ -449,6 +472,7 @@ if (sections.length && navLinks.length) {
     autoTimer = setInterval(() => { current = (current + 1) % total; updateCarousel(); }, 3500);
   });
 })();
+
 
 // ══════════════════════════════════════════════
 // ── Category Horizontal Slider ───────────────

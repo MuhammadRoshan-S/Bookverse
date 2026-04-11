@@ -122,6 +122,7 @@ def search_google_books(query, max_results=24):
                 'category': info.get('categories', ['General'])[0] if info.get('categories') else 'General',
                 'price': random.randint(199, 799),
                 'rating': round(random.uniform(3.5, 5.0), 1),
+                'info_link': info.get('infoLink', f'https://books.google.com/books?id={item.get("id", "")}'),
             })
         return results
     except Exception as e:

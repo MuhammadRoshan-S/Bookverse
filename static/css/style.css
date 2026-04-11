@@ -649,6 +649,7 @@ input, textarea, select { font-family: inherit; }
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
 }
 .book-author {
@@ -981,6 +982,7 @@ input, textarea, select { font-family: inherit; }
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
   overflow: hidden;
 }
 .cart-item-author { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 8px; }
@@ -2172,91 +2174,99 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   .hero-left .hero-cta { display: inline-flex !important; }
 
   /* ── Hero (mobile) ── */
-  .hero { min-height: 100svh; overflow: hidden; }
+  .hero { min-height: 100vh; overflow: hidden; position: relative; }
 
-  /* Hero content: stack vertically, push to bottom */
+  /* Hero content fills height but doesn't position children */
   .hero-content {
     flex-direction: column !important;
     align-items: flex-start !important;
-    justify-content: flex-end !important;
-    padding: 0 20px 60px !important;   /* left/right 20px, 60px bottom breathing room */
-    gap: 20px !important;
+    justify-content: flex-start !important;
+    padding: 0 !important;
+    gap: 0 !important;
   }
 
-  /* Reduce the massive title so it fits without overflow */
+  /* Hero-left: pinned to bottom via absolute — bulletproof cross-browser */
+  .hero-left {
+    position: absolute !important;
+    bottom: 70px !important;  /* above the ticker */
+    left: 20px !important;
+    right: 20px !important;
+    margin: 0 !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 10px !important;
+  }
+
+  /* Reduce title size so BOOKVERSE fits without overflow */
   .hero-title {
-    font-size: clamp(3.5rem, 19vw, 5.5rem) !important;
-    line-height: 0.88 !important;
+    font-size: clamp(2.8rem, 13vw, 4.2rem) !important;
+    line-height: 0.9 !important;
     letter-spacing: -1px !important;
-    margin-bottom: 12px !important;
+    margin-bottom: 6px !important;
   }
+  .hero-eyebrow { font-size: 0.62rem; letter-spacing: 2px; margin-bottom: 6px; }
+  .hero-sub { font-size: 0.7rem; letter-spacing: 1.5px; }
 
-  .hero-eyebrow { font-size: 0.62rem; letter-spacing: 2px; margin-bottom: 10px; }
-  .hero-sub { font-size: 0.72rem; letter-spacing: 1.5px; }
-
-  /* Show a short CTA on mobile even without hero-right */
-  .hero-left .hero-cta-mobile {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 2px;
-    color: var(--bg);
-    background: var(--white);
-    padding: 12px 24px;
-    border-radius: 50px;
-    margin-top: 16px;
-    text-decoration: none;
-  }
-
-  /* Hero right: hide on mobile (too little space) */
+  /* Hero right: hide on mobile */
   .hero-right { display: none !important; }
 
-  /* Carousel — switch to simple flat scroll on mobile */
+  /* ── Carousel — mini 3D coverflow on mobile (swipe to navigate) ── */
+  .trending-section { padding: 50px 0 180px; }  /* bottom padding shows info below scene */
   .carousel-scene {
-    height: auto;
-    perspective: none;
-    display: block;
-    overflow-x: auto;
-    overflow-y: hidden;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-    scrollbar-width: none;
-    padding: 20px 0;
+    height: 280px !important;
+    perspective: 900px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    overflow: visible !important;   /* allow info to show below */
   }
-  .carousel-scene::-webkit-scrollbar { display: none; }
   .carousel-track {
-    display: flex; flex-direction: row;
-    width: max-content; gap: 16px; padding: 0 20px;
-    position: static; transform: none !important;
+    position: relative !important;
+    width: 100% !important;
+    height: 260px !important;
+    transform-style: preserve-3d !important;
+    display: block !important;     /* NOT flex — back to JS-controlled */
+    padding: 0 !important;
   }
-  /* Override JS 3D transforms for mobile */
-  .carousel-item {
-    position: static !important;
-    transform: none !important;
-    opacity: 1 !important;
-    z-index: auto !important;
-    width: 200px; flex-shrink: 0;
-    scroll-snap-align: center;
-    display: flex; flex-direction: column;
+  /* Items: JS controls all transforms — just reset flat overrides */
+  .carousel-item,
+  .carousel-item.active,
+  .carousel-item.side,
+  .carousel-item.far {
+    position: absolute !important;
+    left: 50% !important;
+    top: 50% !important;
+    transform-origin: center center !important;
+    display: block !important;
+    width: auto !important;
+    flex-direction: unset !important;
+    flex-shrink: unset !important;
+    scroll-snap-align: unset !important;
   }
-  .carousel-item.active, .carousel-item.side, .carousel-item.far {
-    transform: none !important; opacity: 1 !important;
+  /* Smaller cards on mobile */
+  .carousel-card { width: 120px !important; }
+  .carousel-item.active .carousel-card { width: 120px !important; box-shadow: 0 24px 56px rgba(0,0,0,0.8), 0 0 0 1px rgba(255,255,255,0.08) !important; }
+  .carousel-cover { width: 100% !important; height: auto !important; aspect-ratio: 2/3 !important; border-radius: 12px; }
+  /* Info: back to absolute, shown only for active */
+  .carousel-info {
+    position: absolute !important;
+    bottom: -115px !important;
+    left: 50% !important;
+    transform: translateX(-50%) !important;
+    width: 220px !important;
+    text-align: center !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+    margin-top: 0 !important;
   }
-  .carousel-card { width: 200px; height: 280px; border-radius: 12px; display: block; }
-  .carousel-cover { width: 200px; height: 280px; object-fit: cover; border-radius: 12px; }
-  .carousel-info { padding: 8px 4px; }
-  .carousel-title { font-size: 0.8rem; }
-  .carousel-author { font-size: 0.7rem; }
-  .carousel-price { font-size: 0.85rem; margin: 4px 0; }
-  .carousel-actions { gap: 6px; flex-wrap: wrap; }
-  .carousel-cart-btn, .carousel-buy-btn { font-size: 0.65rem; padding: 6px 10px; }
-  .carousel-nav { display: none; }         /* hide prev/next arrows, use scroll */
+  .carousel-item.active .carousel-info { opacity: 1 !important; pointer-events: all !important; }
+  .carousel-actions { justify-content: center !important; }
+  .carousel-nav { display: none !important; }  /* swipe to navigate */
 
   /* Categories */
   .categories { padding: 50px 20px 60px; }
-  .cat-slide { min-width: 200px !important; }
+  .cat-slider-wrap { margin: 0; padding: 16px 0 32px; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .cat-slide { min-width: 170px !important; width: 170px !important; }
   .cat-card { height: 220px; }
   .cat-card-title { font-size: 1.1rem; }
   .section-title { font-size: clamp(2rem, 8vw, 4rem); }

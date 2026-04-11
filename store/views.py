@@ -11,6 +11,8 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.paginator import Paginator
 from django.db.models import Q
+from django.utils.text import slugify
+from django.contrib.auth.decorators import login_required
 
 from .models import Category, Book, Cart, CartItem, Order, OrderItem, Wishlist
 from .google_books import search_google_books
@@ -94,19 +96,23 @@ def home(request):
     featured_books = Book.objects.filter(is_featured=True).select_related('category')[:12]
     bestsellers = Book.objects.filter(is_bestseller=True).select_related('category')[:6]
 
-    # Carousel: only real book cover scans — Google Books only adds "edge=curl"
-    # to URLs for books that have an actual scanned front cover image.
+    # Carousel: prefer books with real scanned covers (edge=curl)
     carousel_books = Book.objects.filter(
         cover_image_url__contains='edge=curl',
         rating__gte=3.5
     ).select_related('category').order_by('-rating', '-is_bestseller')[:20]
 
-    # Fallback: if not enough with edge=curl, fill with zoom=2 books
+    # Fallback 1: zoom=2 covers
     if carousel_books.count() < 5:
         carousel_books = Book.objects.filter(
             cover_image_url__startswith='https',
             cover_image_url__contains='zoom=2',
-            rating__gte=4.0
+        ).select_related('category').order_by('-rating')[:20]
+
+    # Fallback 2: any book with ANY cover URL
+    if carousel_books.count() < 5:
+        carousel_books = Book.objects.exclude(
+            cover_image_url=''
         ).select_related('category').order_by('-rating')[:20]
 
     context = {
@@ -181,19 +187,52 @@ def book_list_view(request):
 
 def search_view(request):
     query = request.GET.get('q', '').strip()
-    db_books = []
-    api_books = []
+    books = []
     if query:
-        db_books = Book.objects.filter(
+        # 1. Find books already in DB
+        db_books = list(Book.objects.filter(
             Q(title__icontains=query) | Q(authors__icontains=query)
-        ).select_related('category')[:12]
+        ).select_related('category')[:12])
+
+        # 2. If not enough, fetch from Google Books and auto-save into DB
         if len(db_books) < 6:
-            api_books = search_google_books(query, max_results=12)
+            api_items = search_google_books(query, max_results=12)
+            for item in api_items:
+                gid = item.get('id')
+                if not gid:
+                    continue
+                # Don't duplicate if already in DB
+                if Book.objects.filter(google_books_id=gid).exists():
+                    continue
+                # Get or create a matching category
+                cat_name = item.get('category', 'General')
+                category, _ = Category.objects.get_or_create(
+                    name=cat_name,
+                    defaults={'slug': slugify(cat_name), 'icon': '📚'}
+                )
+                try:
+                    Book.objects.create(
+                        google_books_id=gid,
+                        title=item['title'],
+                        authors=item['authors'],
+                        cover_image_url=item.get('cover', ''),
+                        description=item.get('description', ''),
+                        price=item['price'],
+                        rating=item['rating'],
+                        category=category,
+                        stock=50,
+                    )
+                except Exception:
+                    pass  # slug collision or other edge-case — skip silently
+
+        # Re-query so we pick up newly saved books too
+        books = list(Book.objects.filter(
+            Q(title__icontains=query) | Q(authors__icontains=query)
+        ).select_related('category')[:24])
 
     context = {
         'query': query,
-        'db_books': db_books,
-        'api_books': api_books,
+        'books': books,
     }
     return render(request, 'store/search.html', context)
 
@@ -285,6 +324,7 @@ def update_cart(request, item_id):
 
 # ─── Buy Now (Add to cart + redirect to checkout) ────────────────────────────
 
+@login_required
 @require_POST
 def buy_now(request, book_id):
     book = get_object_or_404(Book, pk=book_id)
@@ -298,6 +338,7 @@ def buy_now(request, book_id):
 
 # ─── Checkout ────────────────────────────────────────────────────────────────
 
+@login_required
 def checkout_view(request):
     cart = get_or_create_cart(request)
     if cart.item_count == 0:
@@ -419,8 +460,6 @@ def toggle_wishlist(request, book_id):
         return JsonResponse({'success': True, 'wishlisted': False, 'message': 'Removed from wishlist'})
     return JsonResponse({'success': True, 'wishlisted': True, 'message': 'Added to wishlist ♥'})
 
-
-from django.contrib.auth.decorators import login_required
 
 @login_required
 def wishlist_page(request):
