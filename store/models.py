@@ -1,4 +1,4 @@
-from django.db import models
+﻿from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 
@@ -9,7 +9,7 @@ class Category(models.Model):
     description = models.TextField(blank=True)
     tag_line = models.CharField(max_length=200, blank=True)
     hero_image = models.ImageField(upload_to='categories/', blank=True, null=True)
-    icon = models.CharField(max_length=50, blank=True, default='📚')
+    icon = models.CharField(max_length=50, blank=True, default='ðŸ“š')
     order = models.PositiveIntegerField(default=0)
 
     class Meta:
@@ -64,7 +64,7 @@ class Book(models.Model):
         if self.cover_image:
             return self.cover_image.url
         if self.cover_image_url:
-            return self.cover_image_url
+            return self.cover_image_url.replace('zoom=1', 'zoom=0').replace('&edge=curl', '')
         return '/static/images/default_cover.png'
 
     def discount_percent(self):
@@ -77,7 +77,7 @@ class Book(models.Model):
 
 
 class Wishlist(models.Model):
-    """Per-user wishlist — one row per (user, book) pair."""
+    """Per-user wishlist â€” one row per (user, book) pair."""
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='wishlist_items')
     book = models.ForeignKey(Book, on_delete=models.CASCADE, related_name='wishlisted_by')
     added_at = models.DateTimeField(auto_now_add=True)
@@ -87,7 +87,7 @@ class Wishlist(models.Model):
         ordering = ['-added_at']
 
     def __str__(self):
-        return f'{self.user.username} → {self.book.title}'
+        return f'{self.user.username} â†’ {self.book.title}'
 
 
 class Cart(models.Model):
@@ -151,7 +151,7 @@ class Order(models.Model):
         ordering = ['-created_at']
 
     def __str__(self):
-        return f"Order #{self.pk} — {self.full_name}"
+        return f"Order #{self.pk} â€” {self.full_name}"
 
 
 class OrderItem(models.Model):
@@ -165,3 +165,4 @@ class OrderItem(models.Model):
     @property
     def subtotal(self):
         return self.price * self.quantity
+

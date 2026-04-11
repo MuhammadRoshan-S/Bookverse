@@ -1,4 +1,4 @@
-import requests
+﻿import requests
 import random
 from decimal import Decimal
 from django.conf import settings
@@ -61,10 +61,10 @@ def parse_book_data(item, category_name):
         img_links.get('medium') or
         img_links.get('thumbnail', '')
     )
-    # Upgrade to HTTPS only — keep zoom=1 so edge=curl stays intact.
+    # Upgrade to HTTPS only â€” keep zoom=1 so edge=curl stays intact.
     # "edge=curl" in a Google Books URL proves it has a real scanned front cover.
     if cover_url:
-        cover_url = cover_url.replace('http://', 'https://')
+        cover_url = cover_url.replace('http://', 'https://').replace('zoom=1', 'zoom=0').replace('&edge=curl', '')
 
     price_min, price_max = PRICE_RANGES.get(category_name, (199, 499))
     price = Decimal(random.randint(price_min, price_max))
@@ -112,7 +112,7 @@ def search_google_books(query, max_results=24):
             img_links = info.get('imageLinks', {})
             cover_url = img_links.get('thumbnail', '')
             if cover_url:
-                cover_url = cover_url.replace('http://', 'https://')
+                cover_url = cover_url.replace('http://', 'https://').replace('zoom=1', 'zoom=0').replace('&edge=curl', '')
             results.append({
                 'id': item.get('id'),
                 'title': info.get('title', 'Untitled')[:200],
@@ -128,3 +128,4 @@ def search_google_books(query, max_results=24):
     except Exception as e:
         print(f"Search error: {e}")
         return []
+
