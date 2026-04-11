@@ -1,4 +1,4 @@
-from django.urls import path
+﻿from django.urls import path
 from . import views
 
 urlpatterns = [
@@ -14,9 +14,11 @@ urlpatterns = [
     path('cart/update/<int:item_id>/', views.update_cart, name='update_cart'),
     path('buy-now/<int:book_id>/', views.buy_now, name='buy_now'),
     path('checkout/', views.checkout_view, name='checkout'),
+    path('orders/', views.my_orders, name='my_orders'),
     path('payment-success/', views.payment_success, name='payment_success'),
     path('order-success/<int:order_id>/', views.order_success, name='order_success'),
     # Wishlist
     path('wishlist/', views.wishlist_page, name='wishlist'),
     path('wishlist/toggle/<int:book_id>/', views.toggle_wishlist, name='toggle_wishlist'),
 ]
+

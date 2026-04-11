@@ -2195,7 +2195,7 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   /* Hero-left: pinned below nav via absolute */
   .hero-left {
     position: absolute !important;
-    top: 50% !important; transform: translateY(-50%) !important; bottom: auto !important;
+    top: auto !important; bottom: 80px !important; transform: none !important;
     left: 20px !important;
     right: 20px !important;
     margin: 0 !important;
@@ -2342,4 +2342,5 @@ a.carousel-card:hover .carousel-cover { transform: scale(1.03); }
   .newsletter-form { flex-direction: column; gap: 10px; }
   .newsletter-input, .newsletter-btn { width: 100%; }
 }
+
 

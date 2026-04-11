@@ -473,3 +473,8 @@ def wishlist_page(request):
         'wishlist_book_ids': wishlist_book_ids,
     }
     return render(request, 'store/wishlist.html', context)
+
+@login_required
+def my_orders(request):
+    orders = Order.objects.filter(user=request.user).prefetch_related('items', 'items__book').order_by('-created_at')
+    return render(request, 'store/orders.html', {'orders': orders})

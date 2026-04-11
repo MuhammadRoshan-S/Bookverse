@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Orders — Bookverse{% endblock %}
+
+{% block content %}
+<div class="orders-page" style="padding-top: 100px; padding-bottom: 80px; max-width: 900px; margin: 0 auto; padding-left: 20px; padding-right: 20px; min-height: 80vh;">
+
+  <div class="orders-header reveal" style="text-align: center; margin-bottom: 60px;">
+    <span class="section-tag">PURCHASE HISTORY</span>
+    <h1 class="section-title">MY ORDERS</h1>
+    <p class="wishlist-sub">{{ orders|length }} order{{ orders|length|pluralize }} placed</p>
+  </div>
+
+  {% if orders %}
+  <div class="orders-list" style="display: flex; flex-direction: column; gap: 24px;">
+    {% for order in orders %}
+    <div class="order-card reveal" style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 24px; transition: all var(--transition);">
+      
+      <div class="order-header" style="display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 16px;">
+        <div class="order-meta">
+          <h3 style="font-family: var(--font-display); font-size: 1.2rem; margin-bottom: 4px;">Order #{{ order.pk }}</h3>
+          <p style="font-size: 0.85rem; color: var(--text-muted);">{{ order.created_at|date:"F j, Y, g:i a" }}</p>
+        </div>
+        <div class="order-status-badge" style="background: rgba(255,255,255,0.08); padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 600; text-transform: uppercase;">
+          {{ order.get_status_display }}
+        </div>
+      </div>
+
+      <div class="order-items" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+        {% for item in order.items.all %}
+        <div class="order-item" style="display: flex; align-items: center; gap: 16px;">
+          {% if item.book %}
+          <img src="{{ item.book.get_cover }}" alt="{{ item.title }}" style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;" loading="lazy" />
+          {% else %}
+          <div style="width: 40px; height: 60px; background: rgba(255,255,255,0.1); border-radius: 4px;"></div>
+          {% endif %}
+          <div class="order-item-info" style="flex: 1;">
+            <p style="font-weight: 500; font-size: 0.95rem;">{{ item.title }}</p>
+            <p style="font-size: 0.8rem; color: var(--text-muted);">Qty: {{ item.quantity }}</p>
+          </div>
+          <div class="order-item-price" style="font-weight: 600;">
+            ₹{{ item.subtotal }}
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+
+      <div class="order-footer" style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 16px;">
+        <span style="color: var(--text-muted); font-size: 0.9rem;">Total Amount</span>
+        <span style="font-size: 1.4rem; font-weight: 700; font-family: var(--font-mono);">₹{{ order.total }}</span>
+      </div>
+
+    </div>
+    {% endfor %}
+  </div>
+
+  {% else %}
+  <div class="wishlist-empty" style="text-align: center; padding: 60px 0;">
+    <div class="wishlist-empty-icon" style="font-size: 3rem; margin-bottom: 20px; opacity: 0.4;">📦</div>
+    <h2 style="font-family: var(--font-display); font-size: 2rem; margin-bottom: 12px;">No orders yet</h2>
+    <p style="color: var(--text-muted); margin-bottom: 30px;">Once you purchase books, your order history will appear here.</p>
+    <a href="{% url 'book_list' %}" class="hero-cta" style="display:inline-block; padding: 12px 30px; background: var(--white); color: var(--black); border-radius: 30px; font-weight: 600; font-size: 0.8rem; text-decoration: none;">BROWSE BOOKS →</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}
