@@ -267,7 +267,124 @@
     }
     
     .header-flex { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
-    
+
+    /* Mobile hamburger */
+    .mobile-topbar {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 56px;
+      background: var(--bg-alt);
+      backdrop-filter: blur(20px);
+      border-bottom: 1px solid var(--border);
+      z-index: 200;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+    }
+    .mobile-topbar-logo {
+      font-family: var(--font-display);
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -2px;
+      color: var(--text);
+      text-decoration: none;
+    }
+    .hamburger {
+      background: none;
+      border: 1px solid var(--border);
+      color: var(--text);
+      width: 40px;
+      height: 40px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      cursor: pointer;
+      padding: 0;
+      flex-shrink: 0;
+    }
+    .hamburger span {
+      display: block;
+      width: 20px;
+      height: 2px;
+      background: var(--text);
+      transition: all 0.3s ease;
+    }
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Sidebar overlay for mobile */
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.7);
+      z-index: 99;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .sidebar-overlay.active {
+      opacity: 1;
+    }
+
+    /* Responsive breakpoints */
+    @media (max-width: 768px) {
+      body { display: block; }
+
+      .mobile-topbar { display: flex; }
+
+      .sidebar {
+        width: 260px;
+        transform: translateX(-100%);
+        transition: transform 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+        z-index: 100;
+      }
+      .sidebar.open { transform: translateX(0); }
+
+      .sidebar-overlay { display: block; }
+
+      .main-content {
+        margin-left: 0;
+        padding: 80px 20px 40px;
+        max-width: 100%;
+        box-sizing: border-box;
+        width: 100%;
+      }
+
+      .page-title {
+        font-size: 2.2rem;
+        letter-spacing: -1px;
+        margin-bottom: 24px;
+      }
+
+      .stat-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        margin-bottom: 32px;
+      }
+
+      .stat-val { font-size: 2.5rem; }
+
+      .header-flex {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+        margin-bottom: 24px;
+      }
+
+      table { display: block; overflow-x: auto; white-space: nowrap; }
+
+      .card { padding: 20px; }
+    }
+
+    @media (max-width: 480px) {
+      .stat-grid { grid-template-columns: 1fr; }
+      .page-title { font-size: 1.8rem; }
+    }
+
     /* Forms */
     .form-group { margin-bottom: 30px; }
     .form-label { display: block; margin-bottom: 10px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
@@ -293,7 +410,20 @@
 </head>
 <body>
 
-  <aside class="sidebar">
+  <!-- Mobile top bar -->
+  <div class="mobile-topbar">
+    <a href="{% url 'home' %}" class="mobile-topbar-logo">BV.</a>
+    <button class="hamburger" id="hamburger-btn" aria-label="Toggle menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </div>
+
+  <!-- Overlay -->
+  <div class="sidebar-overlay" id="sidebar-overlay"></div>
+
+  <aside class="sidebar" id="sidebar">
     <a href="{% url 'home' %}" class="sidebar-header">
       <span>BV.</span>
     </a>
@@ -337,6 +467,44 @@
     
     {% block content %}{% endblock %}
   </main>
+
+<script>
+  (function() {
+    var btn = document.getElementById('hamburger-btn');
+    var sidebar = document.getElementById('sidebar');
+    var overlay = document.getElementById('sidebar-overlay');
+
+    function openSidebar() {
+      sidebar.classList.add('open');
+      overlay.classList.add('active');
+      btn.classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeSidebar() {
+      sidebar.classList.remove('open');
+      overlay.classList.remove('active');
+      btn.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    btn.addEventListener('click', function() {
+      if (sidebar.classList.contains('open')) {
+        closeSidebar();
+      } else {
+        openSidebar();
+      }
+    });
+
+    overlay.addEventListener('click', closeSidebar);
+
+    // Close sidebar when a nav link is clicked on mobile
+    var navLinks = sidebar.querySelectorAll('.nav-link');
+    navLinks.forEach(function(link) {
+      link.addEventListener('click', closeSidebar);
+    });
+  })();
+</script>
 
 </body>
 </html>
