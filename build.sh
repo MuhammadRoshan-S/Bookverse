@@ -10,3 +10,6 @@ python manage.py migrate
 
 # Seed database with books (skips existing books automatically)
 python manage.py seed_books --books 15
+
+# Create a superuser from environment variables on Render
+python manage.py initadmin
