@@ -274,6 +274,9 @@ def cart_json(request):
 
 @require_POST
 def add_to_cart(request, book_id):
+    if request.user.is_authenticated and (request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.role == 'admin')):
+        return JsonResponse({'success': False, 'message': 'Admin accounts cannot make purchases.'}, status=403)
+        
     book = get_object_or_404(Book, pk=book_id)
     cart = get_or_create_cart(request)
     item, created = CartItem.objects.get_or_create(cart=cart, book=book)
@@ -327,6 +330,11 @@ def update_cart(request, item_id):
 @login_required
 @require_POST
 def buy_now(request, book_id):
+    if request.user.is_superuser or (hasattr(request.user, 'profile') and request.user.profile.role == 'admin'):
+        from django.contrib import messages
+        messages.error(request, 'Admin accounts cannot make purchases.')
+        return redirect('home')
+        
     book = get_object_or_404(Book, pk=book_id)
     cart = get_or_create_cart(request)
     item, created = CartItem.objects.get_or_create(cart=cart, book=book)

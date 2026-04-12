@@ -1,0 +1,41 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}Users Management{% endblock %}
+{% block content %}
+<div class="header-flex">
+  <h1 class="page-title" style="margin:0">Users</h1>
+</div>
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Role</th>
+        <th>Joined</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for u in users %}
+      <tr>
+        <td style="font-weight: 500">{{ u.username }}</td>
+        <td>{{ u.email }}</td>
+        <td><span style="background:rgba(255,255,255,0.05); padding:4px 8px; border:1px solid var(--border); font-family:var(--font-mono); font-size:0.7rem;">{% if u.is_superuser %}ROOT{% elif u.profile %}{{ u.profile.role|upper }}{% else %}USER{% endif %}</span></td>
+        <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">{{ u.date_joined|date:"M d, Y" }}</td>
+        <td>
+          {% if not u.is_superuser %}
+            {% if u.is_active %}
+              <a href="{% url 'dashboard:admin_toggle_user_status' u.pk %}" class="btn btn-danger" style="padding: 4px 8px; font-size: 0.7rem;">Block</a>
+            {% else %}
+              <a href="{% url 'dashboard:admin_toggle_user_status' u.pk %}" class="btn btn-primary" style="padding: 4px 8px; font-size: 0.7rem; background:#4ade80; color:#000;">Unblock</a>
+            {% endif %}
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">No users found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

@@ -58,3 +58,40 @@ def profile_view(request):
         return redirect('profile')
 
     return render(request, 'accounts/profile.html', {'profile': profile})
+from django.contrib.auth import login
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import UserProfile
+from django.contrib.auth.models import User
+
+def seller_register_view(request):
+    if request.user.is_authenticated:
+        return redirect('home')
+
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm = request.POST.get('confirm')
+
+        if password != confirm:
+            messages.error(request, 'Passwords do not match.')
+            return redirect('seller_register')
+
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Username is already taken.')
+            return redirect('seller_register')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Email is already registered.')
+            return redirect('seller_register')
+
+        user = User.objects.create_user(username=username, email=email, password=password)
+        # Create profile with seller role
+        UserProfile.objects.create(user=user, role='seller')
+        
+        login(request, user)
+        messages.success(request, 'Seller account created successfully. Welcome to your dashboard!')
+        return redirect('dashboard:seller_home') # we will namespace dashboard
+
+    return render(request, 'accounts/seller_register.html')

@@ -1,0 +1,342 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}Dashboard{% endblock %} - Bookverse</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  
+  <style>
+    :root {
+      --bg: #030303;
+      --bg-alt: rgba(20, 20, 20, 0.7);
+      --border: rgba(255, 255, 255, 0.08);
+      --text: #ffffff;
+      --text-muted: #888888;
+      --accent: #ffffff;
+      --glow: rgba(255, 255, 255, 0.15);
+      --font-display: 'Syne', sans-serif;
+      --font-sans: 'Space Grotesk', sans-serif;
+      --font-mono: 'Space Mono', monospace;
+    }
+    body {
+      margin: 0;
+      font-family: var(--font-sans);
+      background: var(--bg);
+      color: var(--text);
+      display: flex;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+    
+    /* Background animated glow */
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0; left: 0; width: 100vw; height: 100vh;
+      background: radial-gradient(circle at 15% 50%, rgba(255,255,255,0.03) 0%, transparent 50%),
+                  radial-gradient(circle at 85% 30%, rgba(255,255,255,0.02) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    /* Sidebar */
+    .sidebar {
+      width: 260px;
+      background: var(--bg-alt);
+      backdrop-filter: blur(20px);
+      border-right: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      z-index: 10;
+    }
+    
+    .sidebar-header {
+      padding: 30px 24px;
+      font-family: var(--font-display);
+      font-size: 1.8rem;
+      font-weight: 800;
+      letter-spacing: -2px;
+      border-bottom: 1px solid var(--border);
+      text-decoration: none;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .sidebar-header span {
+      background: linear-gradient(135deg, #fff, #888);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .nav-links {
+      padding: 24px 0;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    
+    .nav-link {
+      padding: 14px 24px;
+      color: var(--text-muted);
+      text-decoration: none;
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      align-items: center;
+      border-right: 3px solid transparent;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+    
+    .nav-link:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.02);
+      padding-left: 30px;
+    }
+    
+    .nav-link.active {
+      color: var(--bg);
+      background: var(--text);
+      border-right: none;
+      font-weight: 600;
+    }
+
+    .sidebar-footer {
+      padding: 24px;
+      border-top: 1px solid var(--border);
+    }
+    
+    .btn-return {
+      display: inline-flex;
+      align-items: center;
+      color: var(--text);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      transition: opacity 0.2s;
+    }
+    .btn-return:hover { opacity: 0.7; }
+
+    /* Main Content */
+    .main-content {
+      flex: 1;
+      margin-left: 260px;
+      padding: 50px 60px;
+      max-width: 1400px;
+    }
+    
+    .page-title {
+      font-family: var(--font-display);
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -2px;
+      margin-top: 0;
+      margin-bottom: 40px;
+      line-height: 1;
+      text-transform: uppercase;
+    }
+
+    .card {
+      background: var(--bg-alt);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      border-radius: 0;
+      padding: 30px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 24px;
+      margin-bottom: 50px;
+    }
+    
+    .stat-card {
+      background: var(--bg-alt);
+      backdrop-filter: blur(10px);
+      border: 1px solid var(--border);
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+    
+    .stat-card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(255,255,255,0.3);
+    }
+    
+    .stat-val { 
+      font-family: var(--font-display); 
+      font-size: 4rem; 
+      font-weight: 800; 
+      margin: 10px 0 0;
+      line-height: 1;
+      letter-spacing: -2px;
+    }
+    
+    .stat-label { 
+      color: var(--text-muted); 
+      font-size: 0.85rem; 
+      font-family: var(--font-mono);
+      text-transform: uppercase; 
+      letter-spacing: 2px; 
+    }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+    th, td { padding: 20px 16px; text-align: left; border-bottom: 1px solid var(--border); }
+    th { 
+      color: var(--text-muted); 
+      font-family: var(--font-mono);
+      font-size: 0.75rem; 
+      text-transform: uppercase; 
+      letter-spacing: 2px; 
+      border-bottom: 2px solid var(--border);
+    }
+    td { font-size: 1rem; }
+    tr { transition: background 0.2s; }
+    tr:hover td { background: rgba(255,255,255,0.02); }
+    tr:last-child td { border-bottom: none; }
+    
+    /* Buttons */
+    .btn { 
+      display: inline-flex; 
+      align-items: center; 
+      justify-content: center;
+      padding: 12px 24px; 
+      background: transparent; 
+      color: var(--text); 
+      font-family: var(--font-mono);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-size: 0.8rem; 
+      border: 1px solid var(--border); 
+      cursor: pointer; 
+      transition: all 0.3s ease;
+      text-decoration: none;
+    }
+    .btn:hover { 
+      background: var(--text); 
+      color: var(--bg); 
+    }
+    .btn-primary { 
+      background: var(--text); 
+      color: var(--bg); 
+      font-weight: 700; 
+      border: none;
+    }
+    .btn-primary:hover { 
+      background: transparent; 
+      border: 1px solid var(--text);
+      color: var(--text);
+    }
+    .btn-danger { 
+      border-color: rgba(239, 68, 68, 0.3); 
+      color: #ef4444; 
+    }
+    .btn-danger:hover { 
+      background: #ef4444; 
+      color: #fff; 
+      border-color: #ef4444;
+    }
+    
+    .header-flex { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 40px; }
+    
+    /* Forms */
+    .form-group { margin-bottom: 30px; }
+    .form-label { display: block; margin-bottom: 10px; font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 1px;}
+    .form-input { 
+      width: 100%; 
+      padding: 16px; 
+      background: rgba(255,255,255,0.03); 
+      border: 1px solid var(--border); 
+      color: var(--text); 
+      font-family: var(--font-sans);
+      font-size: 1rem;
+      box-sizing: border-box; 
+      transition: border-color 0.3s, background 0.3s;
+    }
+    .form-input:focus { outline: none; border-color: var(--text); background: rgba(255,255,255,0.05); }
+    
+    .messages { margin-bottom: 30px; }
+    .msg { padding: 16px 20px; margin-bottom: 15px; font-size: 0.95rem; display: flex; align-items: center; border-left: 3px solid transparent; background: rgba(255,255,255,0.03); }
+    .msg.success { border-left-color: #4ade80; color: #4ade80; }
+    .msg.error { border-left-color: #f87171; color: #f87171; }
+    .msg.warning { border-left-color: #facc15; color: #facc15; }
+  </style>
+</head>
+<body>
+
+  <aside class="sidebar">
+    <a href="{% url 'home' %}" class="sidebar-header">
+      <span>BV.</span>
+    </a>
+    
+    <nav class="nav-links">
+      <div style="padding: 0 24px 10px; font-family:var(--font-mono); font-size:0.7rem; color:var(--text-muted); letter-spacing:2px;">
+        {% if request.user.profile.role == 'admin' or request.user.is_superuser %}ADMINISTRATOR
+        {% else %}SELLER PORTAL
+          {% if not request.user.profile.is_approved %}
+          <span style="display:inline-block; margin-left:8px; padding:2px 6px; background:rgba(239, 68, 68, 0.2); color:#ef4444; border-radius:4px; font-size:0.6rem;">PENDING</span>
+          {% endif %}
+        {% endif %}
+      </div>
+      
+      {% if request.user.profile.role == 'admin' or request.user.is_superuser %}
+        <a href="{% url 'dashboard:admin_home' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_home' %}active{% endif %}">Overview</a>
+        <a href="{% url 'dashboard:admin_orders' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_orders' %}active{% endif %}">Orders</a>
+        <a href="{% url 'dashboard:admin_books' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_books' %}active{% endif %}">Books DB</a>
+        <a href="{% url 'dashboard:admin_categories' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_categories' %}active{% endif %}">Categories</a>
+        <a href="{% url 'dashboard:admin_users' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_users' %}active{% endif %}">Users</a>
+        <a href="{% url 'dashboard:admin_sellers' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_sellers' %}active{% endif %}">Sellers</a>
+      {% elif request.user.profile.role == 'seller' %}
+        <a href="{% url 'dashboard:seller_home' %}" class="nav-link {% if request.resolver_match.url_name == 'seller_home' %}active{% endif %}">Overview</a>
+        <a href="{% url 'dashboard:seller_books' %}" class="nav-link {% if request.resolver_match.url_name == 'seller_books' or request.resolver_match.url_name == 'seller_add_book' or request.resolver_match.url_name == 'seller_edit_book' %}active{% endif %}">Catalog</a>
+      {% endif %}
+    </nav>
+    
+    <div class="sidebar-footer">
+      <a href="{% url 'home' %}" class="btn-return">← Exit to Store</a>
+    </div>
+  </aside>
+
+  <main class="main-content">
+    {% if messages %}
+    <div class="messages">
+      {% for message in messages %}
+      <div class="msg {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+    {% endif %}
+    
+    {% block content %}{% endblock %}
+  </main>
+
+</body>
+</html>

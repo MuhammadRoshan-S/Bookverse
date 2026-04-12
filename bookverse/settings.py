@@ -1,4 +1,4 @@
-from pathlib import Path
+﻿from pathlib import Path
 from dotenv import load_dotenv
 import os
 
@@ -18,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'store',
+    'dashboard',
     'accounts',
 ]
 
@@ -95,3 +96,4 @@ RAZORPAY_KEY_ID = os.getenv('RAZORPAY_KEY_ID')
 RAZORPAY_KEY_SECRET = os.getenv('RAZORPAY_KEY_SECRET')
 
 SESSION_COOKIE_AGE = 86400 * 7  # 7 days
+

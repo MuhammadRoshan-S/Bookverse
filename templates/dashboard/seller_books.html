@@ -1,0 +1,59 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}My Books{% endblock %}
+{% block content %}
+<div class="header-flex">
+  <h1 class="page-title" style="margin:0">My Uploaded Books</h1>
+  {% if request.user.profile.is_approved %}
+  <a href="{% url 'dashboard:seller_add_book' %}" class="btn btn-primary">+ Upload New Book</a>
+  {% else %}
+  <span class="btn btn-primary" style="opacity:0.5; cursor:not-allowed;" title="Awaiting Account Approval">+ Upload New Book</span>
+  {% endif %}
+</div>
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Cover</th>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Price</th>
+        <th>Downloads (PDF)</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in books %}
+      <tr>
+        <td>
+          <img src="{{ book.get_cover }}" alt="" style="width:40px; height:60px; object-fit:cover; border-radius:4px;">
+        </td>
+        <td style="font-weight: 500;">{{ book.title }}</td>
+        <td>{{ book.category.name|default:"-" }}</td>
+        <td style="font-weight: 600;">₹{{ book.price }}</td>
+        <td>
+          {% if book.pdf_file %}
+          <a href="{{ book.pdf_file.url }}" target="_blank" style="color:var(--text); text-decoration:underline;">Yes (View)</a>
+          {% else %}
+          <span style="color:var(--text-muted)">None</span>
+          {% endif %}
+        </td>
+        <td>
+          {% if request.user.profile.is_approved %}
+          <a href="{% url 'dashboard:seller_edit_book' book.pk %}" class="btn" style="padding:4px 8px; font-size:0.75rem; margin-right:8px;">Edit</a>
+          <form method="POST" action="{% url 'dashboard:seller_delete_book' book.pk %}" style="display:inline" onsubmit="return confirm('Delete this book permanently?');">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;">Delete</button>
+          </form>
+          {% else %}
+          <span class="btn" style="padding:4px 8px; font-size:0.75rem; margin-right:8px; opacity:0.5; cursor:not-allowed;">Edit</span>
+          <span class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem; opacity:0.5; cursor:not-allowed;">Delete</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">You haven't uploaded any books yet.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

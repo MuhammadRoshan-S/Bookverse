@@ -125,6 +125,17 @@
               <span class="pdd-count">{{ cart_item_count }}</span>
               {% endif %}
             </a>
+            {% if request.user.profile.role == 'admin' or request.user.is_superuser %}
+            <a class="pdd-item" href="{% url 'dashboard:admin_home' %}" role="menuitem">
+              <span class="pdd-ico">🛠️</span>
+              <span>Admin Dashboard</span>
+            </a>
+            {% elif request.user.profile.role == 'seller' %}
+            <a class="pdd-item" href="{% url 'dashboard:seller_home' %}" role="menuitem">
+              <span class="pdd-ico">🏪</span>
+              <span>Seller Dashboard</span>
+            </a>
+            {% endif %}
             <a class="pdd-item" href="{% url 'my_orders' %}" role="menuitem">
               <span class="pdd-ico">📦</span>
               <span>My Orders</span>

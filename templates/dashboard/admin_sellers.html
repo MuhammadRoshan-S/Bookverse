@@ -1,0 +1,45 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}Sellers Management{% endblock %}
+{% block content %}
+<div class="header-flex">
+  <h1 class="page-title" style="margin:0">Sellers</h1>
+</div>
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Username</th>
+        <th>Email</th>
+        <th>Status</th>
+        <th>Joined</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for s in sellers %}
+      <tr>
+        <td style="font-weight: 500">{{ s.username }}</td>
+        <td>{{ s.email }}</td>
+        <td>
+            {% if s.profile.is_approved %}
+                <span style="background:rgba(74, 222, 128, 0.2); color:#4ade80; padding:4px 8px; border-radius:4px; font-family:var(--font-mono); font-size:0.7rem;">APPROVED</span>
+            {% else %}
+                <span style="background:rgba(250, 204, 21, 0.2); color:#facc15; padding:4px 8px; border-radius:4px; font-family:var(--font-mono); font-size:0.7rem;">PENDING</span>
+            {% endif %}
+        </td>
+        <td style="font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-muted);">{{ s.date_joined|date:"M d, Y" }}</td>
+        <td>
+            {% if s.profile.is_approved %}
+            <a href="{% url 'dashboard:admin_toggle_seller_approval' s.pk %}" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.7rem;">Revoke</a>
+            {% else %}
+            <a href="{% url 'dashboard:admin_toggle_seller_approval' s.pk %}" class="btn btn-primary" style="padding: 6px 12px; font-size: 0.7rem;">Approve</a>
+            {% endif %}
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="5">No sellers found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

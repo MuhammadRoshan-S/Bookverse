@@ -1,0 +1,30 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}Seller Dashboard{% endblock %}
+{% block content %}
+<h1 class="page-title">Performance Overview</h1>
+
+{% if not request.user.profile.is_approved %}
+<div style="background: rgba(250, 204, 21, 0.1); border-left: 4px solid #facc15; padding: 16px 20px; margin-bottom: 30px; font-family: var(--font-sans); display: flex; align-items: center;">
+  <span style="font-size: 1.2rem; margin-right: 12px; color: #facc15;">&#9888;</span>
+  <div>
+    <h3 style="margin: 0 0 4px 0; color: #facc15; font-size: 1.05rem;">Your account is under review</h3>
+    <p style="margin: 0; color: var(--text-muted); font-size: 0.9rem;">You can explore the dashboard, but you won't be able to add or modify books until an administrator approves your account.</p>
+  </div>
+</div>
+{% endif %}
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-label">Total Uploads</div>
+    <div class="stat-val">{{ total_books|default:"0" }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Books Sold</div>
+    <div class="stat-val">{{ total_purchases|default:"0" }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Total Earnings</div>
+    <div class="stat-val">₹{{ total_earnings|floatformat:2|default:"0.00" }}</div>
+  </div>
+</div>
+{% endblock %}

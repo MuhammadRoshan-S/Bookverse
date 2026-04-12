@@ -1,0 +1,51 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}{% if book %}Edit Book{% else %}Upload Book{% endif %}{% endblock %}
+{% block content %}
+<div class="header-flex">
+  <h1 class="page-title" style="margin:0">{% if book %}Edit Book{% else %}Upload New Book{% endif %}</h1>
+</div>
+<div class="card" style="max-width: 600px;">
+  <form method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    <div class="form-group">
+      <label class="form-label">Title *</label>
+      <input type="text" name="title" class="form-input" value="{{ book.title }}" required />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Author(s)</label>
+      <input type="text" name="authors" class="form-input" value="{{ book.authors }}" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Description</label>
+      <textarea name="description" class="form-input" rows="4" style="resize: vertical;">{{ book.description }}</textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Category</label>
+      <select name="category" class="form-input" style="background:#1e1e24; color:white;">
+        <option value="">-- Select Category --</option>
+        {% for cat in categories %}
+        <option value="{{ cat.pk }}" {% if book and book.category_id == cat.pk %}selected{% endif %}>{{ cat.name }}</option>
+        {% endfor %}
+      </select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Price (₹) *</label>
+      <input type="number" step="0.01" name="price" class="form-input" value="{{ book.price|default:'299.00' }}" required />
+    </div>
+    <div class="form-group">
+      <label class="form-label">Cover Image</label>
+      {% if book.cover_image %}<p style="font-size:0.8rem; color:var(--text-muted);">Current: {{ book.cover_image.name }}</p>{% endif %}
+      <input type="file" name="cover_image" class="form-input" accept="image/*" />
+    </div>
+    <div class="form-group">
+      <label class="form-label">PDF File (Optional)</label>
+      {% if book.pdf_file %}<p style="font-size:0.8rem; color:var(--text-muted);">Current: {{ book.pdf_file.name }}</p>{% endif %}
+      <input type="file" name="pdf_file" class="form-input" accept="application/pdf" />
+    </div>
+    <div style="margin-top: 30px;">
+      <button type="submit" class="btn btn-primary" style="padding:12px 24px; font-size:1rem;">{% if book %}Save Changes{% else %}Publish Book{% endif %}</button>
+      <a href="{% url 'dashboard:seller_books' %}" class="btn" style="margin-left:12px;">Cancel</a>
+    </div>
+  </form>
+</div>
+{% endblock %}

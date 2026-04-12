@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block title %}Become a Seller — Bookverse{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card" style="border-top: 4px solid var(--accent, #fff);">
+    <p class="auth-logo">BOOKVERSE SELLER</p>
+    <p class="auth-subtitle">Join the marketplace and sell your books</p>
+
+    <form method="POST">
+      {% csrf_token %}
+      
+      <div class="form-group">
+        <label for="username">USERNAME</label>
+        <input type="text" name="username" id="username" class="form-input" required />
+      </div>
+
+      <div class="form-group">
+        <label for="email">EMAIL ADDRESS</label>
+        <input type="email" name="email" id="email" class="form-input" required />
+      </div>
+      
+      <div class="form-group">
+        <label for="password">PASSWORD</label>
+        <input type="password" name="password" id="password" class="form-input" required />
+      </div>
+
+      <div class="form-group">
+        <label for="confirm">CONFIRM PASSWORD</label>
+        <input type="password" name="confirm" id="confirm" class="form-input" required />
+      </div>
+
+      <div class="auth-actions">
+        <button type="submit" class="btn-auth" style="background: var(--white); color: var(--black);">APPLY AS SELLER →</button>
+      </div>
+    </form>
+    <p class="auth-alt">Already have an account? <a href="{% url 'login' %}">Sign in</a></p>
+  </div>
+</div>
+{% endblock %}

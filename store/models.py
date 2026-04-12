@@ -42,6 +42,8 @@ class Book(models.Model):
     published_date = models.CharField(max_length=20, blank=True)
     publisher = models.CharField(max_length=200, blank=True)
     language = models.CharField(max_length=20, blank=True, default='en')
+    seller = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True, related_name='books_sold')
+    pdf_file = models.FileField(upload_to='books/pdfs/', blank=True, null=True)
     is_featured = models.BooleanField(default=False)
     is_bestseller = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -165,4 +167,5 @@ class OrderItem(models.Model):
     @property
     def subtotal(self):
         return self.price * self.quantity
+
 

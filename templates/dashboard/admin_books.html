@@ -1,0 +1,47 @@
+{% extends 'dashboard/base_dashboard.html' %}
+{% block title %}Books Management{% endblock %}
+{% block content %}
+<div class="header-flex">
+  <h1 class="page-title" style="margin:0">Books Catalog</h1>
+  <a href="{% url 'dashboard:admin_add_book' %}" class="btn btn-primary">+ Publish New Book</a>
+</div>
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Title</th>
+        <th>Category</th>
+        <th>Seller</th>
+        <th>Price</th>
+        <th>Featured</th>
+        <th>Action</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for book in books %}
+      <tr>
+        <td style="font-weight: 500; max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ book.title }}</td>
+        <td>{{ book.category.name }}</td>
+        <td>{% if book.seller %}{{ book.seller.username }}{% else %}<span style="color:var(--text-muted)">API (Google)</span>{% endif %}</td>
+        <td>₹{{ book.price }}</td>
+        <td>{% if book.is_featured %}<span style="color:#4ade80">Yes</span>{% else %}<span style="color:var(--text-muted)">No</span>{% endif %}</td>
+        <td>
+          <div style="display: flex; gap: 8px;">
+            <form method="POST" action="{% url 'dashboard:admin_toggle_featured' book.pk %}" style="margin: 0;">
+              {% csrf_token %}
+              <button type="submit" class="btn" style="padding:4px 8px; font-size:0.75rem;">Toggle Featured</button>
+            </form>
+            <form method="POST" action="{% url 'dashboard:admin_delete_book' book.pk %}" style="margin: 0;" onsubmit="return confirm('Are you sure you want to delete this book?');">
+              {% csrf_token %}
+              <button type="submit" class="btn btn-danger" style="padding:4px 8px; font-size:0.75rem;">Delete</button>
+            </form>
+          </div>
+        </td>
+      </tr>
+      {% empty %}
+      <tr><td colspan="6">No books found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}
